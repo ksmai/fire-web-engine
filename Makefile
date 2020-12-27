@@ -16,12 +16,19 @@ CXXFLAGS = \
 	-std=c++17 \
 	-I$(SRC_DIR)/
 
+EMCCFLAGS = \
+	-s WASM=1 \
+	-s MAX_WEBGL_VERSION=2 \
+	-s FETCH=1 \
+	-s MODULARIZE=1 \
+	-s 'EXPORT_NAME="createFireWebEngine"'
+
 .PHONY = default clean
 
 default: $(EXE)
 
 $(EXE): $(OBJ_FILES)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS) -o $@ $(EMCCFLAGS) $^
 
 -include $(DEP_FILES)
 
