@@ -16,6 +16,8 @@ CXXFLAGS = \
 	-std=c++17 \
 	-I$(SRC_DIR)/
 
+.PHONY = default clean
+
 default: $(EXE)
 
 $(EXE): $(OBJ_FILES)
