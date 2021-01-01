@@ -1,5 +1,5 @@
 #include <cstring>
-#include "ResourceCache/Fetcher.h"
+#include "Resource/Fetcher.h"
 
 Fetcher::Fetcher() {
   emscripten_fetch_attr_init(&attr);
