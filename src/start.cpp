@@ -7,7 +7,8 @@
 #include <cstring>
 #include "Shader/Shader.h"
 #include "Shader/Program.h"
-#include "ResourceCache/Fetcher.h"
+#include "Resource/Fetcher.h"
+#include "Resource/ZipFile.h"
 
 const float square[] = {
   -0.5f, 0.5f, 0.0f,
@@ -72,7 +73,7 @@ public:
   void update() {
     lastTimestamp = currentTimestamp;
     currentTimestamp = emscripten_get_now();
-    std::cout << "dt = " << (currentTimestamp - lastTimestamp) << "\n";
+    // std::cout << "dt = " << (currentTimestamp - lastTimestamp) << "\n";
 
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -127,11 +128,18 @@ void onDownloadFailed(emscripten_fetch_t* fetch) {
   emscripten_fetch_close(fetch);
 }
 
+void onZipDownloaded(emscripten_fetch_t* fetch) {
+  std::cout << "Zip file downloaded: " << fetch->url << " [" << fetch->numBytes << " bytes]\n";
+  ZipFile file{fetch->data, fetch->numBytes};
+  emscripten_fetch_close(fetch);
+}
+
 extern "C" {
   EMSCRIPTEN_KEEPALIVE
   void start() {
     Fetcher fetcher;
     fetcher.fetch("/DefaultVertex.glsl", onVertexShaderDownloaded, onDownloadFailed);
     fetcher.fetch("/DefaultFragment.glsl", onFragmentShaderDownloaded, onDownloadFailed);
+    fetcher.fetch("/resources.zip", onZipDownloaded, onDownloadFailed);
   }
 }
