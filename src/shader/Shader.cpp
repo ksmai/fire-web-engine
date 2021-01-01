@@ -1,5 +1,4 @@
 #include <iostream>
-#include "GLES3/gl3.h"
 #include "shader/Shader.h"
 
 Shader::Shader(Type type, Source source) {
@@ -13,9 +12,7 @@ Shader::Shader(Shader&& moved) {
 }
 
 Shader::~Shader() {
-  std::cout << "destructor\n";
   if (shader != 0) {
-  std::cout << "deleted\n";
     glDeleteShader(shader);
   }
 }
@@ -32,7 +29,7 @@ void Shader::compile(Source source) const {
   if (!success) {
     char infoLog[512];
     glGetShaderInfoLog(shader, 512, nullptr, infoLog);
-    std::cout << "Shader compilation failed: " << infoLog << "\n";
+    std::cout << "GLSL Shader compilation failed: " << infoLog << "\n";
     throw "Shader compilation failed";
   }
 }

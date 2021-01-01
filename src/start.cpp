@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <cmath>
 #include "shader/Shader.h"
+#include "shader/Program.h"
 
 const float square[] = {
   -0.5f, 0.5f, 0.0f,
@@ -12,7 +13,8 @@ const float square[] = {
   0.5f, -0.5f, 0.0f,
 };
 
-GLuint vbo, shaderProgram, uColor;
+GLuint vbo, uColor;
+Program program;
 
 const char* vertexShaderSource = "#version 300 es\nlayout (location = 0) in vec3 aPos;\nvoid main() {gl_Position = vec4(aPos, 1.0);}";
 
@@ -56,31 +58,19 @@ public:
 
     Shader vertexShader{Shader::createVertexShader(vertexShaderSource)};
     Shader fragmentShader{Shader::createFragmentShader(fragmentShaderSource)};
-
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader.get());
-    glAttachShader(shaderProgram, fragmentShader.get());
-    glLinkProgram(shaderProgram);
-
-    int success;
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-      char info[512];
-      glGetProgramInfoLog(shaderProgram, 512, nullptr, info);
-      std::cout << "shaderProgram no success: " << info << "\n";
-    }
+    program = Program{vertexShader, fragmentShader};
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(square), square, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    uColor = glGetUniformLocation(shaderProgram, "uColor");
+    uColor = glGetUniformLocation(program.get(), "uColor");
   }
 
   void update() {
     lastTimestamp = currentTimestamp;
     currentTimestamp = emscripten_get_now();
-    //std::cout << "dt = " << (currentTimestamp - lastTimestamp) << "\n";
+    std::cout << "dt = " << (currentTimestamp - lastTimestamp) << "\n";
 
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -88,7 +78,7 @@ public:
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
-    glUseProgram(shaderProgram);
+    program.use();
     glUniform3f(uColor, 0.0f, 0.0f, std::sin(currentTimestamp/100.0)/2.0 +0.5);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   }

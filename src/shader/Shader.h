@@ -9,6 +9,8 @@ public:
   using Source = const char*;
   using Ref = GLuint;
 
+  friend class Program;
+
   Shader(const Shader&) =delete;
 
   Shader(Shader&&);
@@ -21,12 +23,12 @@ public:
 
   static Shader createFragmentShader(Source);
 
-  Ref get() const;
-
 private:
   Shader(Type, Source);
 
   void compile(Source source) const;
+
+  Ref get() const;
 
   GLuint shader;
 };
