@@ -3,6 +3,7 @@
 #include <GLES3/gl3.h>
 #include <SDL.h>
 #include <cmath>
+#include "shader/Shader.h"
 
 const float square[] = {
   -0.5f, 0.5f, 0.0f,
@@ -11,7 +12,7 @@ const float square[] = {
   0.5f, -0.5f, 0.0f,
 };
 
-GLuint vbo, vertexShader, fragmentShader, shaderProgram, uColor;
+GLuint vbo, shaderProgram, uColor;
 
 const char* vertexShaderSource = "#version 300 es\nlayout (location = 0) in vec3 aPos;\nvoid main() {gl_Position = vec4(aPos, 1.0);}";
 
@@ -53,43 +54,21 @@ public:
 
     glGenBuffers(1, &vbo);
 
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-    glCompileShader(vertexShader);
-
-    int success;
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-      char info[512];
-      glGetShaderInfoLog(vertexShader, 512, nullptr, info);
-      std::cout << "vertex shader no success: " << info << "\n";
-    }
-
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
-    glCompileShader(fragmentShader);
-
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-      char info[512];
-      glGetShaderInfoLog(fragmentShader, 512, nullptr, info);
-      std::cout << "fragment shader no success: " << info << "\n";
-    }
+    Shader vertexShader{Shader::createVertexShader(vertexShaderSource)};
+    Shader fragmentShader{Shader::createFragmentShader(fragmentShaderSource)};
 
     shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
+    glAttachShader(shaderProgram, vertexShader.get());
+    glAttachShader(shaderProgram, fragmentShader.get());
     glLinkProgram(shaderProgram);
 
+    int success;
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
       char info[512];
       glGetProgramInfoLog(shaderProgram, 512, nullptr, info);
       std::cout << "shaderProgram no success: " << info << "\n";
     }
-
-    glDeleteShader(fragmentShader);
-    glDeleteShader(vertexShader);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(square), square, GL_STATIC_DRAW);
@@ -101,7 +80,7 @@ public:
   void update() {
     lastTimestamp = currentTimestamp;
     currentTimestamp = emscripten_get_now();
-    std::cout << "dt = " << (currentTimestamp - lastTimestamp) << "\n";
+    //std::cout << "dt = " << (currentTimestamp - lastTimestamp) << "\n";
 
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
