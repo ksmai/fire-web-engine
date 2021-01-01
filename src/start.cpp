@@ -2,11 +2,12 @@
 #include <emscripten.h>
 #include <emscripten/fetch.h>
 #include <GLES3/gl3.h>
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <cmath>
 #include <cstring>
 #include "Shader/Shader.h"
 #include "Shader/Program.h"
+#include "ResourceCache/Fetcher.h"
 
 const float square[] = {
   -0.5f, 0.5f, 0.0f,
@@ -129,15 +130,8 @@ void onDownloadFailed(emscripten_fetch_t* fetch) {
 extern "C" {
   EMSCRIPTEN_KEEPALIVE
   void start() {
-    emscripten_fetch_attr_t attr;
-    emscripten_fetch_attr_init(&attr);
-    std::strcpy(attr.requestMethod, "GET");
-    attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY;
-    attr.onsuccess = onVertexShaderDownloaded;
-    attr.onerror = onDownloadFailed;
-    emscripten_fetch(&attr, "/DefaultVertex.glsl");
-
-    attr.onsuccess = onFragmentShaderDownloaded;
-    emscripten_fetch(&attr, "/DefaultFragment.glsl");
+    Fetcher fetcher;
+    fetcher.fetch("/DefaultVertex.glsl", onVertexShaderDownloaded, onDownloadFailed);
+    fetcher.fetch("/DefaultFragment.glsl", onFragmentShaderDownloaded, onDownloadFailed);
   }
 }
