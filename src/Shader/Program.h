@@ -2,7 +2,7 @@
 #define __PROGRAM_H__
 
 #include "GLES3/gl3.h"
-#include "shader/Shader.h"
+#include "Shader/Shader.h"
 
 class Program {
 public:

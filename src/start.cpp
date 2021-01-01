@@ -5,8 +5,8 @@
 #include <SDL.h>
 #include <cmath>
 #include <cstring>
-#include "shader/Shader.h"
-#include "shader/Program.h"
+#include "Shader/Shader.h"
+#include "Shader/Program.h"
 
 const float square[] = {
   -0.5f, 0.5f, 0.0f,

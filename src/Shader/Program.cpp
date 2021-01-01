@@ -1,5 +1,5 @@
 #include <iostream>
-#include "shader/Program.h"
+#include "Shader/Program.h"
 
 Program::Program() {
   program = 0;
