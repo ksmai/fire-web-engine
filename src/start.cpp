@@ -1,8 +1,10 @@
 #include <iostream>
 #include <emscripten.h>
+#include <emscripten/fetch.h>
 #include <GLES3/gl3.h>
 #include <SDL.h>
 #include <cmath>
+#include <cstring>
 #include "shader/Shader.h"
 #include "shader/Program.h"
 
@@ -16,9 +18,9 @@ const float square[] = {
 GLuint vbo, uColor;
 Program program;
 
-const char* vertexShaderSource = "#version 300 es\nlayout (location = 0) in vec3 aPos;\nvoid main() {gl_Position = vec4(aPos, 1.0);}";
+char* vertexShaderSource = nullptr;
 
-const char* fragmentShaderSource = "#version 300 es\nprecision mediump float;\nuniform vec3 uColor;\nout vec4 FragColor;\nvoid main() { FragColor = vec4(uColor, 1.0); }";
+char* fragmentShaderSource = nullptr;
 
 class Game {
 public:
@@ -56,14 +58,13 @@ public:
 
     glGenBuffers(1, &vbo);
 
-    Shader vertexShader{Shader::createVertexShader(vertexShaderSource)};
-    Shader fragmentShader{Shader::createFragmentShader(fragmentShaderSource)};
-    program = Program{vertexShader, fragmentShader};
-
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(square), square, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    Shader vertexShader{Shader::createVertexShader(vertexShaderSource)};
+    Shader fragmentShader{Shader::createFragmentShader(fragmentShaderSource)};
+    program = Program{vertexShader, fragmentShader};
     uColor = glGetUniformLocation(program.get(), "uColor");
   }
 
@@ -94,9 +95,49 @@ void loop(void* arg) {
   gameLogic->update();
 }
 
+void onVertexShaderDownloaded(emscripten_fetch_t* fetch) {
+  std::cout << "Downloaded " << fetch->numBytes << " bytes from " << fetch->url << "\n";
+  vertexShaderSource = new char[fetch->numBytes + 1];
+  for (uint64_t i = 0; i < fetch->numBytes; ++i) {
+    vertexShaderSource[i] = fetch->data[i];
+  }
+  vertexShaderSource[fetch->numBytes] = '\0';
+  emscripten_fetch_close(fetch);
+  if (fragmentShaderSource) {
+    emscripten_set_main_loop_arg(loop, new Game{}, 0, false);
+  }
+}
+
+void onFragmentShaderDownloaded(emscripten_fetch_t* fetch) {
+  std::cout << "Downloaded " << fetch->numBytes << " bytes from " << fetch->url << "\n";
+  fragmentShaderSource = new char[fetch->numBytes + 1];
+  for (uint64_t i = 0; i < fetch->numBytes; ++i) {
+    fragmentShaderSource[i] = fetch->data[i];
+  }
+  fragmentShaderSource[fetch->numBytes] = '\0';
+  emscripten_fetch_close(fetch);
+  if (vertexShaderSource) {
+    emscripten_set_main_loop_arg(loop, new Game{}, 0, false);
+  }
+}
+
+void onDownloadFailed(emscripten_fetch_t* fetch) {
+  std::cout << "Download failed: " << fetch->url << " [" << fetch->status << "]\n";
+  emscripten_fetch_close(fetch);
+}
+
 extern "C" {
   EMSCRIPTEN_KEEPALIVE
   void start() {
-    emscripten_set_main_loop_arg(loop, new Game{}, 0, false);
+    emscripten_fetch_attr_t attr;
+    emscripten_fetch_attr_init(&attr);
+    std::strcpy(attr.requestMethod, "GET");
+    attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY;
+    attr.onsuccess = onVertexShaderDownloaded;
+    attr.onerror = onDownloadFailed;
+    emscripten_fetch(&attr, "/DefaultVertex.glsl");
+
+    attr.onsuccess = onFragmentShaderDownloaded;
+    emscripten_fetch(&attr, "/DefaultFragment.glsl");
   }
 }
