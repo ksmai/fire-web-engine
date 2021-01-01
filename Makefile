@@ -20,6 +20,7 @@ EMCCFLAGS = \
 	-s WASM=1 \
 	-s MAX_WEBGL_VERSION=2 \
 	-s FETCH=1 \
+	-s USE_SDL=2 \
 	-s MODULARIZE=1 \
 	-s 'EXPORT_NAME="createFireWebEngine"'
 

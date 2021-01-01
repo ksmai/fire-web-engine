@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "http-server ."
+    "start": "cp ../dist/index.js ../dist/index.wasm . && http-server ."
   },
   "keywords": [],
   "author": "",
