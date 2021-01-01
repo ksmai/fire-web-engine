@@ -8,7 +8,7 @@ EXE = $(DIST_DIR)/index.js
 
 CXX = emcc
 CXXFLAGS = \
-	-O3 \
+	-O0 \
 	-Wall \
 	-Werror \
 	-Wextra \
