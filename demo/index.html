@@ -1,0 +1,22 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fire Web Engine Demo</title>
+  </head>
+  <body>
+    <canvas id="game" width="1280" height="720"></canvas>
+
+    <script src="/index.js"></script>
+    <script>
+      (function() {
+        var canvas = document.getElementById('game');
+        createFireWebEngine({
+          canvas: canvas
+        }).then(function(Module) {
+          Module._start();
+        });
+      }());
+    </script>
+  </body>
+</html>

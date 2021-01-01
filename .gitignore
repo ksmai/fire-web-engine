@@ -33,3 +33,6 @@
 
 # compiled files
 dist/
+
+# npm
+node_modules/
