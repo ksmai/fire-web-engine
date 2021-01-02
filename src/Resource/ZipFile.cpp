@@ -1,12 +1,12 @@
 #include <iostream>
 #include "Resource/ZipFile.h"
 
-ZipFile::ZipFile(ZipFileData data, Size size) {
+FW::ZipFile::ZipFile(ZipFileData data, Size size) {
   std::size_t signaturePosition = findEndOfCentralDirectorySignature(data, size);
   std::cout << "Found at " << signaturePosition << "\n";
 }
 
-ZipFile::Size ZipFile::findEndOfCentralDirectorySignature(ZipFileData data, Size size) const {
+FW::ZipFile::Size FW::ZipFile::findEndOfCentralDirectorySignature(ZipFileData data, Size size) const {
   Size bytesSearched = 0;
   Size start = size - 22;
   while (bytesSearched < (1<<16) && start >= bytesSearched) {

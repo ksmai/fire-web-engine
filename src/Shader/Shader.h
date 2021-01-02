@@ -3,34 +3,36 @@
 
 #include <GLES3/gl3.h>
 
-class Shader {
-public:
-  using Type = GLuint;
-  using Source = const char*;
-  using Ref = GLuint;
+namespace FW {
+  class Shader {
+  public:
+    using Type = GLuint;
+    using Source = const char*;
+    using Ref = GLuint;
 
-  friend class Program;
+    friend class Program;
 
-  Shader(const Shader&) =delete;
+    Shader(const Shader&) =delete;
 
-  Shader(Shader&&);
+    Shader(Shader&&);
 
-  Shader& operator=(const Shader&) =delete;
+    Shader& operator=(const Shader&) =delete;
 
-  ~Shader();
+    ~Shader();
 
-  static Shader createVertexShader(Source);
+    static Shader createVertexShader(Source);
 
-  static Shader createFragmentShader(Source);
+    static Shader createFragmentShader(Source);
 
-private:
-  Shader(Type, Source);
+  private:
+    Shader(Type, Source);
 
-  void compile(Source source) const;
+    void compile(Source source) const;
 
-  Ref get() const;
+    Ref get() const;
 
-  GLuint shader;
-};
+    GLuint shader;
+  };
+}
 
 #endif

@@ -1,11 +1,11 @@
 #include <iostream>
 #include "Shader/Program.h"
 
-Program::Program() {
+FW::Program::Program() {
   program = 0;
 }
 
-Program::Program(const Shader& vertexShader, const Shader& fragmentShader) {
+FW::Program::Program(const Shader& vertexShader, const Shader& fragmentShader) {
   program = glCreateProgram();
   glAttachShader(program, vertexShader.get());
   glAttachShader(program, fragmentShader.get());
@@ -20,26 +20,26 @@ Program::Program(const Shader& vertexShader, const Shader& fragmentShader) {
   }
 }
 
-Program::Program(Program&& other) {
+FW::Program::Program(Program&& other) {
   program = other.program;
   other.program = 0;
 }
 
-Program& Program::operator=(Program&& other) {
+FW::Program& FW::Program::operator=(Program&& other) {
   std::swap(program, other.program);
   return *this;
 }
 
-Program::~Program() {
+FW::Program::~Program() {
   if (program != 0) {
     glDeleteProgram(program);
   }
 }
 
-void Program::use() const {
+void FW::Program::use() const {
   glUseProgram(program);
 }
 
-Program::Ref Program::get() const {
+FW::Program::Ref FW::Program::get() const {
   return program;
 }

@@ -18,7 +18,7 @@ const float square[] = {
 };
 
 GLuint vbo, uColor;
-Program program;
+FW::Program program;
 
 char* vertexShaderSource = nullptr;
 
@@ -64,9 +64,9 @@ public:
     glBufferData(GL_ARRAY_BUFFER, sizeof(square), square, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    Shader vertexShader{Shader::createVertexShader(vertexShaderSource)};
-    Shader fragmentShader{Shader::createFragmentShader(fragmentShaderSource)};
-    program = Program{vertexShader, fragmentShader};
+    FW::Shader vertexShader{FW::Shader::createVertexShader(vertexShaderSource)};
+    FW::Shader fragmentShader{FW::Shader::createFragmentShader(fragmentShaderSource)};
+    program = FW::Program{vertexShader, fragmentShader};
     uColor = glGetUniformLocation(program.get(), "uColor");
   }
 
@@ -130,14 +130,14 @@ void onDownloadFailed(emscripten_fetch_t* fetch) {
 
 void onZipDownloaded(emscripten_fetch_t* fetch) {
   std::cout << "Zip file downloaded: " << fetch->url << " [" << fetch->numBytes << " bytes]\n";
-  ZipFile file{fetch->data, fetch->numBytes};
+  FW::ZipFile file{fetch->data, fetch->numBytes};
   emscripten_fetch_close(fetch);
 }
 
 extern "C" {
   EMSCRIPTEN_KEEPALIVE
   void start() {
-    Fetcher fetcher;
+    FW::Fetcher fetcher;
     fetcher.fetch("/DefaultVertex.glsl", onVertexShaderDownloaded, onDownloadFailed);
     fetcher.fetch("/DefaultFragment.glsl", onFragmentShaderDownloaded, onDownloadFailed);
     fetcher.fetch("/resources.zip", onZipDownloaded, onDownloadFailed);

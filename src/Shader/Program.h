@@ -4,30 +4,32 @@
 #include "GLES3/gl3.h"
 #include "Shader/Shader.h"
 
-class Program {
-public:
-  using Ref = GLuint;
+namespace FW {
+  class Program {
+  public:
+    using Ref = GLuint;
 
-  Program();
+    Program();
 
-  Program(const Shader& vertexShader, const Shader& fragmentShader);
+    Program(const Shader& vertexShader, const Shader& fragmentShader);
 
-  Program(Program&&);
+    Program(Program&&);
 
-  Program& operator=(Program&&);
+    Program& operator=(Program&&);
 
-  Program(const Program&) =delete;
+    Program(const Program&) =delete;
 
-  Program& operator=(const Program&) =delete;
+    Program& operator=(const Program&) =delete;
 
-  ~Program();
+    ~Program();
 
-  void use() const;
+    void use() const;
 
-  Ref get() const;
+    Ref get() const;
 
-private:
-  GLuint program;
-};
+  private:
+    GLuint program;
+  };
+}
 
 #endif

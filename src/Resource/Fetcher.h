@@ -5,16 +5,18 @@
 #include <functional>
 #include <emscripten/fetch.h>
 
-class Fetcher {
-public:
-  using Callback = void(*)(emscripten_fetch_t*);
+namespace FW {
+  class Fetcher {
+  public:
+    using Callback = void(*)(emscripten_fetch_t*);
 
-  Fetcher();
+    Fetcher();
 
-  void fetch(const std::string& url, Callback onsuccess, Callback onerror);
+    void fetch(const std::string& url, Callback onsuccess, Callback onerror);
 
-private:
-  emscripten_fetch_attr_t attr;
-};
+  private:
+    emscripten_fetch_attr_t attr;
+  };
+}
 
 #endif
