@@ -97,32 +97,6 @@ void loop(void* arg) {
   gameLogic->update();
 }
 
-void onVertexShaderDownloaded(emscripten_fetch_t* fetch) {
-  std::cout << "Downloaded " << fetch->numBytes << " bytes from " << fetch->url << "\n";
-  vertexShaderSource = new char[fetch->numBytes + 1];
-  for (uint64_t i = 0; i < fetch->numBytes; ++i) {
-    vertexShaderSource[i] = fetch->data[i];
-  }
-  vertexShaderSource[fetch->numBytes] = '\0';
-  emscripten_fetch_close(fetch);
-  if (fragmentShaderSource) {
-    emscripten_set_main_loop_arg(loop, new Game{}, 0, false);
-  }
-}
-
-void onFragmentShaderDownloaded(emscripten_fetch_t* fetch) {
-  std::cout << "Downloaded " << fetch->numBytes << " bytes from " << fetch->url << "\n";
-  fragmentShaderSource = new char[fetch->numBytes + 1];
-  for (uint64_t i = 0; i < fetch->numBytes; ++i) {
-    fragmentShaderSource[i] = fetch->data[i];
-  }
-  fragmentShaderSource[fetch->numBytes] = '\0';
-  emscripten_fetch_close(fetch);
-  if (vertexShaderSource) {
-    emscripten_set_main_loop_arg(loop, new Game{}, 0, false);
-  }
-}
-
 void onDownloadFailed(emscripten_fetch_t* fetch) {
   std::cout << "Download failed: " << fetch->url << " [" << fetch->status << "]\n";
   emscripten_fetch_close(fetch);
@@ -130,16 +104,34 @@ void onDownloadFailed(emscripten_fetch_t* fetch) {
 
 void onZipDownloaded(emscripten_fetch_t* fetch) {
   std::cout << "Zip file downloaded: " << fetch->url << " [" << fetch->numBytes << " bytes]\n";
-  FW::ZipFile file{fetch->data, fetch->numBytes};
-  emscripten_fetch_close(fetch);
+  FW::ZipFile file{reinterpret_cast<FW::ZipFile::ZipFileData>(fetch->data), fetch->numBytes};
+  for (FW::ZipFile::Index i = 0; i < file.getNumFiles(); ++i) {
+    std::cout << "Found file " << i << " : " << file.getFileName(i) << "\n";
+    std::cout << "File content length: " << file.getFileContent(i).size() << "\n";
+    std::vector<unsigned char> data = file.getFileContent(i);
+    if (file.getFileName(i) == "DefaultVertex.glsl") {
+      vertexShaderSource = new char[data.size() + 1];
+      for (std::size_t j = 0; j < data.size(); ++j) {
+        vertexShaderSource[j] = static_cast<char>(data[j]);
+      }
+      vertexShaderSource[data.size()] = '\0';
+    } else if (file.getFileName(i) == "DefaultFragment.glsl") {
+      fragmentShaderSource = new char[data.size() + 1];
+      for (std::size_t j = 0; j < data.size(); ++j) {
+        fragmentShaderSource[j] = static_cast<char>(data[j]);
+      }
+      fragmentShaderSource[data.size()] = '\0';
+    }
+  }
+  if (vertexShaderSource && fragmentShaderSource) {
+    emscripten_set_main_loop_arg(loop, new Game{}, 0, false);
+  }
 }
 
 extern "C" {
   EMSCRIPTEN_KEEPALIVE
   void start() {
     FW::Fetcher fetcher;
-    fetcher.fetch("/DefaultVertex.glsl", onVertexShaderDownloaded, onDownloadFailed);
-    fetcher.fetch("/DefaultFragment.glsl", onFragmentShaderDownloaded, onDownloadFailed);
     fetcher.fetch("/resources.zip", onZipDownloaded, onDownloadFailed);
   }
 }

@@ -8,21 +8,46 @@
 namespace FW {
   class ZipFile {
   public:
-    using ZipFileData = const char *;
+    using ZipFileData = const unsigned char *;
     using FileName = const std::string;
-    using FileData = std::vector<char>;
+    using FileData = std::vector<unsigned char>;
     using Size = uint64_t;
+    using Index = uint16_t;
 
     ZipFile(ZipFileData, Size);
 
-    const char* getData(FileName fileName) const;
+    Index getNumFiles() const {
+      return numFiles;
+    }
+
+    std::string getFileName(Index i) const {
+      return files[i].name;
+    }
+
+    FileData getFileContent(Index i) const;
 
   private:
     Size findEndOfCentralDirectorySignature(ZipFileData, Size) const;
+    void readCentralDirectoryHeaders();
+    Size readCentralDirectoryHeader(Index, Size);
 
-    std::vector<FileData> files;
-    std::map<FileName, std::size_t> indexes;
+    struct FileInfo {
+      Size compressedSize;
+      Size uncompressedSize;
+      Size rawDataOffset;
+      std::string name;
+      bool compressed;
+    };
+
+    Size size;
+    ZipFileData data;
+    std::vector<FileInfo> files;
+    Size startOfCentralDirectory;
+    Index numFiles;
   };
+
+  uint32_t parseUint32LE(ZipFile::ZipFileData);
+  uint16_t parseUint16LE(ZipFile::ZipFileData);
 }
 
 #endif
