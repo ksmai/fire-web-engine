@@ -7,8 +7,8 @@
 namespace FW {
   class Loader {
   public:
-    virtual std::regex pattern() const;
-    virtual Resource* load(Resource::Data&& data) const;
+    virtual std::regex pattern() const =0;
+    virtual Resource* load(Resource::Data&& data) const =0;
 
     virtual ~Loader() {}
   };
