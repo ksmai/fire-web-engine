@@ -10,6 +10,8 @@
 #include "Resource/ResourceCache.h"
 #include "Resource/StringLoader.h"
 #include "Resource/RawLoader.h"
+#include "Process/DelayProcess.h"
+#include "Process/ProcessManager.h"
 
 const float square[] = {
   -0.5f, 0.5f, 0.0f,
@@ -21,6 +23,7 @@ const float square[] = {
 GLuint vbo, uColor;
 FW::Program program;
 FW::ResourceCache resourceCache;
+FW::ProcessManager processManager;
 
 
 
@@ -76,6 +79,11 @@ public:
     uColor = glGetUniformLocation(program.get(), "uColor");
 
     initialized = true;
+
+    std::shared_ptr<FW::Process> parentProcess{std::make_shared<FW::DelayProcess>(3000.0)};
+    std::shared_ptr<FW::Process> childProcess{std::make_shared<FW::DelayProcess>(2000.0)};
+    parentProcess->attachChild(childProcess);
+    processManager.attachProcess(parentProcess);
   }
 
   void update() {
@@ -95,6 +103,8 @@ public:
     float blue = std::sin(currentTimestamp / 203.0 + 27.0) / 2.0 + 0.5;
     glUniform3f(uColor, red, green, blue);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+    processManager.update(currentTimestamp - lastTimestamp);
   }
 
   bool hasInitialized() const {
