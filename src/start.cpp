@@ -7,8 +7,9 @@
 #include <cstring>
 #include "Shader/Shader.h"
 #include "Shader/Program.h"
-#include "Resource/Fetcher.h"
-#include "Resource/ZipFile.h"
+#include "Resource/ResourceCache.h"
+#include "Resource/StringLoader.h"
+#include "Resource/RawLoader.h"
 
 const float square[] = {
   -0.5f, 0.5f, 0.0f,
@@ -19,16 +20,15 @@ const float square[] = {
 
 GLuint vbo, uColor;
 FW::Program program;
+FW::ResourceCache resourceCache;
 
-char* vertexShaderSource = nullptr;
 
-char* fragmentShaderSource = nullptr;
 
 class Game {
 public:
-  Game():
-    currentTimestamp{emscripten_get_now()}
-  {
+  void init() {
+    currentTimestamp = emscripten_get_now();
+
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s", SDL_GetError());
     }
@@ -64,10 +64,18 @@ public:
     glBufferData(GL_ARRAY_BUFFER, sizeof(square), square, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    const char* vertexShaderSource = reinterpret_cast<const char*>(
+      resourceCache.getResource("nested/DefaultVertex.glsl")->buffer()
+    );
+    const char* fragmentShaderSource = reinterpret_cast<const char*>(
+      resourceCache.getResource("nested/nested2/DefaultFragment.glsl")->buffer()
+    );
     FW::Shader vertexShader{FW::Shader::createVertexShader(vertexShaderSource)};
     FW::Shader fragmentShader{FW::Shader::createFragmentShader(fragmentShaderSource)};
     program = FW::Program{vertexShader, fragmentShader};
     uColor = glGetUniformLocation(program.get(), "uColor");
+
+    initialized = true;
   }
 
   void update() {
@@ -82,56 +90,44 @@ public:
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
     program.use();
-    glUniform3f(uColor, 0.0f, 0.0f, std::sin(currentTimestamp/100.0)/2.0 +0.5);
+    float red = std::sin(currentTimestamp / 307.0) / 2.0 + 0.5;
+    float green = std::sin(currentTimestamp / 509.0 + 41.0) / 2.0 + 0.5;
+    float blue = std::sin(currentTimestamp / 203.0 + 27.0) / 2.0 + 0.5;
+    glUniform3f(uColor, red, green, blue);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+  }
+
+  bool hasInitialized() const {
+    return initialized;
   }
 
 private:
   double lastTimestamp, currentTimestamp;
   SDL_Window* window;
   SDL_GLContext context;
+  bool initialized = false;
+
 };
 
 void loop(void* arg) {
   Game* gameLogic = static_cast<Game*>(arg);
-  gameLogic->update();
-}
-
-void onDownloadFailed(emscripten_fetch_t* fetch) {
-  std::cout << "Download failed: " << fetch->url << " [" << fetch->status << "]\n";
-  emscripten_fetch_close(fetch);
-}
-
-void onZipDownloaded(emscripten_fetch_t* fetch) {
-  std::cout << "Zip file downloaded: " << fetch->url << " [" << fetch->numBytes << " bytes]\n";
-  FW::ZipFile file{reinterpret_cast<FW::ZipFile::ZipFileData>(fetch->data), fetch->numBytes};
-  for (FW::ZipFile::Index i = 0; i < file.getNumFiles(); ++i) {
-    std::cout << "Found file " << i << " : " << file.getFileName(i) << "\n";
-    std::cout << "File content length: " << file.getFileContent(i).size() << "\n";
-    std::vector<unsigned char> data = file.getFileContent(i);
-    if (file.getFileName(i) == "DefaultVertex.glsl") {
-      vertexShaderSource = new char[data.size() + 1];
-      for (std::size_t j = 0; j < data.size(); ++j) {
-        vertexShaderSource[j] = static_cast<char>(data[j]);
-      }
-      vertexShaderSource[data.size()] = '\0';
-    } else if (file.getFileName(i) == "DefaultFragment.glsl") {
-      fragmentShaderSource = new char[data.size() + 1];
-      for (std::size_t j = 0; j < data.size(); ++j) {
-        fragmentShaderSource[j] = static_cast<char>(data[j]);
-      }
-      fragmentShaderSource[data.size()] = '\0';
+  if (!resourceCache.isLoading()) {
+    if (!gameLogic->hasInitialized()) {
+      gameLogic->init();
+    } else {
+      gameLogic->update();
     }
   }
-  if (vertexShaderSource && fragmentShaderSource) {
-    emscripten_set_main_loop_arg(loop, new Game{}, 0, false);
-  }
 }
+
+
 
 extern "C" {
   EMSCRIPTEN_KEEPALIVE
   void start() {
-    FW::Fetcher fetcher;
-    fetcher.fetch("/resources.zip", onZipDownloaded, onDownloadFailed);
+    resourceCache.addLoader(new FW::StringLoader);
+    resourceCache.addLoader(new FW::RawLoader);
+    resourceCache.loadZipFile("/resources.zip");
+    emscripten_set_main_loop_arg(loop, new Game{}, 0, false);
   }
 }

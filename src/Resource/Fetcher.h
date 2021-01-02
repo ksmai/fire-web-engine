@@ -10,7 +10,7 @@ namespace FW {
   public:
     using Callback = void(*)(emscripten_fetch_t*);
 
-    Fetcher();
+    explicit Fetcher(void* userData = nullptr);
 
     void fetch(const std::string& url, Callback onsuccess, Callback onerror);
 

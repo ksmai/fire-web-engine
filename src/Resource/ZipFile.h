@@ -24,6 +24,10 @@ namespace FW {
       return files[i].name;
     }
 
+    Size getFileSize(Index i) const {
+      return files[i].uncompressedSize;
+    }
+
     FileData getFileContent(Index i) const;
 
   private:
