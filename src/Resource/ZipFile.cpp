@@ -104,6 +104,7 @@ FW::ZipFile::FileData FW::ZipFile::getFileContent(Index i) const {
   unsigned char in[CHUNK];
   unsigned char out[CHUNK];
   std::vector<unsigned char> result;
+  result.reserve(files[i].uncompressedSize);
   do {
     strm.avail_in = bytesLeft > CHUNK ? CHUNK : bytesLeft;
     bytesLeft -= strm.avail_in;
@@ -139,9 +140,7 @@ FW::ZipFile::FileData FW::ZipFile::getFileContent(Index i) const {
         }
         throw "Inflation failed";
       }
-      for (Size i = 0; i < CHUNK - strm.avail_out; ++i) {
-        result.push_back(out[i]);
-      }
+      result.insert(result.end(), out, out + CHUNK - strm.avail_out);
     } while (strm.avail_out == 0);
   } while (ret != Z_STREAM_END);
 
