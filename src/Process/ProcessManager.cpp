@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <functional>
 #include "Process/ProcessManager.h"
 
 void FW::ProcessManager::update(double dt) {
@@ -33,7 +34,7 @@ void FW::ProcessManager::update(double dt) {
     std::remove_if(
       processes.begin(),
       processes.end(),
-      [](const FW::Process::StrongPtr& process) -> bool { return process->isRemoved(); }
+      std::mem_fn(&FW::Process::isRemoved)
     ),
     processes.end()
   );
