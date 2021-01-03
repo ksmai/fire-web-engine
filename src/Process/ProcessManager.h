@@ -1,7 +1,7 @@
 #ifndef __PROCESS_MANAGER_H__
 #define __PROCESS_MANAGER_H__
 
-#include <list>
+#include <vector>
 #include "Process/Process.h"
 
 namespace FW {
@@ -11,14 +11,10 @@ namespace FW {
     
     void attachProcess(Process::StrongPtr);
 
-    void abortAll(bool immediate);
-
-    std::size_t count() const;
+    void failAll(bool immediate);
 
   private:
-    void clearAll();
-
-    std::list<Process::StrongPtr> processes;
+    std::vector<Process::StrongPtr> processes;
   };
 }
 #endif

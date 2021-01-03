@@ -8,16 +8,13 @@ namespace FW {
   public:
     enum class State {
       Uninitialized,
-      Removed,
       Running,
-      Paused,
       Succeeded,
-      Failed,
-      Aborted
+      Aborted,
+      Removed
     };
 
     using StrongPtr = std::shared_ptr<Process>;
-    using WeakPtr = std::weak_ptr<Process>;
 
     Process() =default;
 
@@ -28,8 +25,7 @@ namespace FW {
     virtual ~Process() {
     }
 
-    virtual void init() {
-      state = State::Running;
+    virtual void onInit() {
     }
 
     virtual void update(double dt) =0;
@@ -37,62 +33,47 @@ namespace FW {
     virtual void onSuccess() {
     }
 
-    virtual void onFail() {
+    virtual void onAbort() {
     }
 
-    virtual void onAbort() {
+    void init() {
+      state = State::Running;
     }
 
     void succeed() {
       state = State::Succeeded;
     }
 
-    void fail() {
-      state = State::Failed;
+    void abort() {
+      state = State::Aborted;
     }
 
-    void pause() {
-      state = State::Paused;
-    }
-
-    void unpause() {
-      state = State::Running;
+    void remove() {
+      state = State::Removed;
     }
 
     bool isUninitialized() const {
-        return state == State::Uninitialized;
-    }
-
-    bool isRemoved() const {
-      return state == State::Removed;
-    }
-
-    bool isAlive() const {
-      return state == State::Running || state == State::Paused;
+      return state == State::Uninitialized;
     }
 
     bool isRunning() const {
       return state == State::Running;
     }
 
-    bool isPaused() const {
-      return state == State::Paused;
-    }
-
-    bool isDead() const {
-      return state == State::Succeeded || state == State::Failed || state == State::Aborted;
+    bool isDone() const {
+      return state == State::Succeeded || state == State::Aborted;
     }
 
     bool isSucceeded() const {
       return state == State::Succeeded;
     }
 
-    bool isFailed() const {
-      return state == State::Failed;
-    }
-
     bool isAborted() const {
       return state == State::Aborted;
+    }
+
+    bool isRemoved() const {
+      return state == State::Removed;
     }
 
     void attachChild(StrongPtr newChild) {
