@@ -6,15 +6,21 @@
 namespace FW {
   class Clock {
   public:
+    using Counter = Uint64;
+
     Clock();
 
     double dt() const;
 
+    double time() const;
+
     void update();
 
   private:
-    Uint64 prevCounter;
-    Uint64 counter;
+    double counterToMS(Counter) const;
+
+    Counter prevCounter;
+    Counter counter;
   };
 }
 #endif

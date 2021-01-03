@@ -9,5 +9,13 @@ void FW::Clock::update() {
 }
 
 double FW::Clock::dt() const {
-  return (counter - prevCounter) * 1000.0 / SDL_GetPerformanceFrequency();
+  return counterToMS(counter - prevCounter);
+}
+
+double FW::Clock::time() const {
+  return counterToMS(counter);
+}
+
+double FW::Clock::counterToMS(Counter counter) const {
+  return counter * 1000.0 / SDL_GetPerformanceFrequency();
 }
