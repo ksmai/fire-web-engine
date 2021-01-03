@@ -14,7 +14,7 @@ namespace FW {
       Removed
     };
 
-    using StrongPtr = std::shared_ptr<Process>;
+    using StrongPtr = std::unique_ptr<Process>;
 
     Process() =default;
 
@@ -77,17 +77,13 @@ namespace FW {
     }
 
     void attachChild(StrongPtr newChild) {
-      child = newChild;
+      child = std::move(newChild);
     }
 
     StrongPtr removeChild() {
-      StrongPtr oldChild = child;
+      StrongPtr oldChild = std::move(child);
       child.reset();
       return oldChild;
-    }
-
-    StrongPtr peekChild() const {
-      return child;
     }
 
   private:

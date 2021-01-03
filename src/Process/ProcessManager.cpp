@@ -20,7 +20,7 @@ void FW::ProcessManager::update(double dt) {
         currentProcess->onSuccess();
         Process::StrongPtr child = currentProcess->removeChild();
         if (child) {
-          attachProcess(child);
+          attachProcess(std::move(child));
         }
       } else if (currentProcess->isAborted()) {
         currentProcess->onAbort();
@@ -40,5 +40,5 @@ void FW::ProcessManager::update(double dt) {
 }
 
 void FW::ProcessManager::attachProcess(Process::StrongPtr process) {
-  processes.push_back(process);
+  processes.push_back(std::move(process));
 }

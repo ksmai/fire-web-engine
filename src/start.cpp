@@ -80,10 +80,10 @@ public:
 
     initialized = true;
 
-    std::shared_ptr<FW::Process> parentProcess{std::make_shared<FW::DelayProcess>(3000.0)};
-    std::shared_ptr<FW::Process> childProcess{std::make_shared<FW::DelayProcess>(2000.0)};
-    parentProcess->attachChild(childProcess);
-    processManager.attachProcess(parentProcess);
+    FW::Process::StrongPtr parentProcess{new FW::DelayProcess{3000.0}};
+    FW::Process::StrongPtr childProcess{new FW::DelayProcess{2000.0}};
+    parentProcess->attachChild(std::move(childProcess));
+    processManager.attachProcess(std::move(parentProcess));
   }
 
   void update() {
