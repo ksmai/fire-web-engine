@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Shader/Shader.h"
+#include "Graphics/Shader.h"
 
 FW::Shader::Shader(Type type, Source source) {
   shader = glCreateShader(type);

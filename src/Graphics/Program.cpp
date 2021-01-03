@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Shader/Program.h"
+#include "Graphics/Program.h"
 
 FW::Program::Program() {
   program = 0;

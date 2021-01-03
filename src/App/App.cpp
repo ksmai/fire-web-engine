@@ -4,7 +4,7 @@
 
 // for temp testing
 #include <cmath>
-#include "Shader/Shader.h"
+#include "Graphics/Shader.h"
 
 FW::App::App(const Config& config) {
   resourceCache.addLoader(new StringLoader{});

@@ -10,7 +10,7 @@
 // for temp testing
 #include <GLES3/gl3.h>
 #include "Process/DelayProcess.h"
-#include "Shader/Program.h"
+#include "Graphics/Program.h"
 
 namespace FW {
   class App {

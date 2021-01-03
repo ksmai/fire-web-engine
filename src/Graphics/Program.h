@@ -2,7 +2,7 @@
 #define __PROGRAM_H__
 
 #include "GLES3/gl3.h"
-#include "Shader/Shader.h"
+#include "Graphics/Shader.h"
 
 namespace FW {
   class Program {
