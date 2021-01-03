@@ -11,8 +11,6 @@ namespace FW {
     
     void attachProcess(Process::StrongPtr);
 
-    void failAll(bool immediate);
-
   private:
     std::vector<Process::StrongPtr> processes;
   };

@@ -61,7 +61,7 @@ namespace FW {
     }
 
     bool isDone() const {
-      return state == State::Succeeded || state == State::Aborted;
+      return isSucceeded() || isAborted();
     }
 
     bool isSucceeded() const {
@@ -91,10 +91,6 @@ namespace FW {
     }
 
   private:
-    void setState(State newState) {
-      state = newState;
-    }
-
     State state = State::Uninitialized;
     StrongPtr child;
   };
