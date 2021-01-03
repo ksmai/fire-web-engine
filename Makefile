@@ -14,7 +14,8 @@ CXXFLAGS = \
 	-Wextra \
 	-pedantic-errors \
 	-std=c++17 \
-	-I$(SRC_DIR)/
+	-I$(SRC_DIR)/ \
+	-I/lib/
 
 EMCCFLAGS = \
 	-s WASM=1 \
