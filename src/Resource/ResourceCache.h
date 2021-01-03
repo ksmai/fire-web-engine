@@ -12,7 +12,7 @@
 namespace FW {
   class ResourceCache {
   public:
-    using ResourcePtr = std::shared_ptr<Resource>;
+    using ResourcePtr = std::unique_ptr<Resource>;
     using LoaderPtr = std::unique_ptr<Loader>;
 
     ResourceCache();
@@ -25,7 +25,7 @@ namespace FW {
 
     void loadZipFile(const std::string&);
 
-    ResourcePtr getResource(const std::string&) const;
+    Resource* getResource(const std::string&) const;
 
     static void fetchSuccessCallback(emscripten_fetch_t*);
     static void fetchErrorCallback(emscripten_fetch_t*);

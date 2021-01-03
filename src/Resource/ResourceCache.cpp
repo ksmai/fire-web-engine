@@ -51,7 +51,7 @@ void FW::ResourceCache::processZipFile(ZipFile::ZipFileData data, ZipFile::Size 
     if (!loader) {
       continue;
     }
-    resources[name] = std::shared_ptr<Resource>(loader->load(file.getFileContent(i)));
+    resources[name] = std::unique_ptr<Resource>{loader->load(file.getFileContent(i))};
     std::cout << "Loaded: " << name << "\n";
   }
   --numLoading;
@@ -66,11 +66,11 @@ FW::Loader* FW::ResourceCache::getLoader(const std::string& name) const {
   return nullptr;
 }
 
-FW::ResourceCache::ResourcePtr FW::ResourceCache::getResource(const std::string& name) const {
+FW::Resource* FW::ResourceCache::getResource(const std::string& name) const {
   auto it = resources.find(name);
   if (it == resources.end()) {
     std::cout << "Cannot get resource: " << name << "\n";
     throw "cannot get resource";
   }
-  return it->second;
+  return it->second.get();
 }
