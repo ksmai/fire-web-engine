@@ -12,6 +12,7 @@
 #include "Resource/RawLoader.h"
 #include "Process/DelayProcess.h"
 #include "Process/ProcessManager.h"
+#include "App/Clock.h"
 
 const float square[] = {
   -0.5f, 0.5f, 0.0f,
@@ -25,14 +26,10 @@ FW::Program program;
 FW::ResourceCache resourceCache;
 FW::ProcessManager processManager;
 
-
-
 class Game {
 public:
   void init() {
-    currentTimestamp = emscripten_get_now();
-
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER)) {
       SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s", SDL_GetError());
     }
 
@@ -87,9 +84,10 @@ public:
   }
 
   void update() {
-    lastTimestamp = currentTimestamp;
-    currentTimestamp = emscripten_get_now();
-    // std::cout << "dt = " << (currentTimestamp - lastTimestamp) << "\n";
+    clock.update();
+    double dt = clock.dt();
+    currentTimestamp += dt;
+    std::cout << "dt = " << dt << "\n";
 
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -104,7 +102,7 @@ public:
     glUniform3f(uColor, red, green, blue);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    processManager.update(currentTimestamp - lastTimestamp);
+    processManager.update(dt);
   }
 
   bool hasInitialized() const {
@@ -112,11 +110,11 @@ public:
   }
 
 private:
-  double lastTimestamp, currentTimestamp;
+  FW::Clock clock;
   SDL_Window* window;
   SDL_GLContext context;
   bool initialized = false;
-
+  double currentTimestamp{0.0};
 };
 
 void loop(void* arg) {
