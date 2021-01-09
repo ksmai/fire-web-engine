@@ -1,4 +1,5 @@
 #include "SDL_image.h"
+#include "glm/vec2.hpp"
 #include "App/App.h"
 #include "Resource/TextLoader.h"
 #include "Resource/RawLoader.h"
@@ -64,10 +65,10 @@ void FW::App::init() {
   glGenBuffers(1, &ebo);
 
   const float square[] = {
-    -0.5f,  0.5f, 0.0f,  0.0f, 1.0f,
-     0.5f,  0.5f, 0.0f,  1.0f, 1.0f,
+    -0.5f,  0.5f, 0.0f,  0.0f, 2.0f,
+     0.5f,  0.5f, 0.0f,  2.0f, 2.0f,
     -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
-     0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
+     0.5f, -0.5f, 0.0f,  2.0f, 0.0f,
   };
 
   const unsigned int elements[] = {0, 1, 2, 3};
@@ -88,8 +89,8 @@ void FW::App::init() {
   // texture
   glGenTextures(1, &texture);
   glBindTexture(GL_TEXTURE_2D, texture);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   Resource::Buffer img{resourceCache.getResource("demo/face.png")->buffer()};
@@ -140,4 +141,7 @@ void FW::App::update() {
   glBindTexture(GL_TEXTURE_2D, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
+
+  glm::vec2 myVec{42.42f, 3.14159f};
+  SDL_Log("myVec.x = %f", myVec.x);
 }

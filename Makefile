@@ -15,7 +15,7 @@ CXXFLAGS = \
 	-pedantic-errors \
 	-std=c++17 \
 	-I$(SRC_DIR)/ \
-	-I/lib/
+	-I./lib/
 
 EMCCFLAGS = \
 	-s WASM=1 \
