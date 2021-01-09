@@ -2,7 +2,7 @@
 #include "Resource/SimpleResource.h"
 
 std::regex FW::TextLoader::pattern() const {
-  return std::regex("(.*)\\.glsl");
+  return std::regex{".*\\.glsl"};
 }
 
 FW::Resource* FW::TextLoader::load(FW::Resource::Data&& data) const {

@@ -1,6 +1,8 @@
+#include "SDL_image.h"
 #include "App/App.h"
 #include "Resource/TextLoader.h"
 #include "Resource/RawLoader.h"
+#include "Resource/ImageLoader.h"
 
 // for temp testing
 #include <cmath>
@@ -8,6 +10,7 @@
 
 FW::App::App(const Config& config) {
   resourceCache.addLoader(new TextLoader{});
+  resourceCache.addLoader(new ImageLoader{});
   resourceCache.addLoader(new RawLoader{});
   resourceCache.loadZipFile(config.sharedResourceFile);
 
@@ -61,10 +64,10 @@ void FW::App::init() {
   glGenBuffers(1, &ebo);
 
   const float square[] = {
-    -0.5f, 0.5f, 0.0f,
-    0.5f, 0.5f, 0.0f,
-    -0.5f, -0.5f, 0.0f,
-    0.5f, -0.5f, 0.0f,
+    -0.5f,  0.5f, 0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f, 0.0f,  1.0f, 1.0f,
+    -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
+     0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
   };
 
   const unsigned int elements[] = {0, 1, 2, 3};
@@ -75,8 +78,10 @@ void FW::App::init() {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+  glEnableVertexAttribArray(1);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
 
@@ -87,6 +92,10 @@ void FW::App::init() {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  Resource::Buffer img{resourceCache.getResource("demo/face.png")->buffer()};
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 16, 16, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
+  glGenerateMipmap(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, 0);
 
   const char* vertexShaderSource = reinterpret_cast<const char*>(
     resourceCache.getResource("demo/DefaultVertex.glsl")->buffer()
@@ -123,12 +132,12 @@ void FW::App::update() {
 
   glBindVertexArray(vao);
   program.use();
-  float red = std::sin(clock.time() / 307.0) / 2.0 + 0.5;
-  float green = std::sin(clock.time() / 509.0 + 41.0) / 2.0 + 0.5;
-  float blue = std::sin(clock.time() / 203.0 + 27.0) / 2.0 + 0.5;
-  glUniform3f(uColor, red, green, blue);
+  glUniform3f(uColor, 1.0f, 1.0f, 1.0f);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+  glBindTexture(GL_TEXTURE_2D, texture);
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, 0);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
 }
