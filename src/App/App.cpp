@@ -1,5 +1,7 @@
 #include "SDL_image.h"
-#include "glm/vec2.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "App/App.h"
 #include "Resource/TextLoader.h"
 #include "Resource/RawLoader.h"
@@ -108,6 +110,7 @@ void FW::App::init() {
   FW::Shader fragmentShader{FW::Shader::createFragmentShader(fragmentShaderSource)};
   program = FW::Program{vertexShader, fragmentShader};
   uColor = glGetUniformLocation(program.get(), "uColor");
+  uModelTransform = glGetUniformLocation(program.get(), "uModelTransform");
 
   FW::Process::StrongPtr parentProcess{new FW::DelayProcess{3000.0}};
   FW::Process::StrongPtr childProcess{new FW::DelayProcess{2000.0}};
@@ -134,6 +137,8 @@ void FW::App::update() {
   glBindVertexArray(vao);
   program.use();
   glUniform3f(uColor, 1.0f, 1.0f, 1.0f);
+  glm::mat4 t{glm::rotate(glm::mat4{1.0f}, static_cast<float>(clock.time()/100.0f), glm::vec3{0.0f, 0.0f, 1.0f})};
+  glUniformMatrix4fv(uModelTransform, 1, GL_FALSE, glm::value_ptr(t));
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
   glBindTexture(GL_TEXTURE_2D, texture);
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, 0);

@@ -45,7 +45,7 @@ namespace FW {
     bool initialized{false};
 
     // for temp testing
-    GLuint vao, vbo, ebo, uColor, texture;
+    GLuint vao, vbo, ebo, uColor, texture, uModelTransform;
     FW::Program program;
   };
 }
