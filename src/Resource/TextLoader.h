@@ -1,10 +1,10 @@
-#ifndef __STRING_LOADER_H__
-#define __STRING_LOADER_H__
+#ifndef __TEXT_LOADER_H__
+#define __TEXT_LOADER_H__
 
 #include "Resource/Loader.h"
 
 namespace FW {
-  class StringLoader: public Loader {
+  class TextLoader: public Loader {
   public:
     virtual std::regex pattern() const override;
 

@@ -1,5 +1,5 @@
 #include "App/App.h"
-#include "Resource/StringLoader.h"
+#include "Resource/TextLoader.h"
 #include "Resource/RawLoader.h"
 
 // for temp testing
@@ -7,7 +7,7 @@
 #include "Graphics/Shader.h"
 
 FW::App::App(const Config& config) {
-  resourceCache.addLoader(new StringLoader{});
+  resourceCache.addLoader(new TextLoader{});
   resourceCache.addLoader(new RawLoader{});
   resourceCache.loadZipFile(config.sharedResourceFile);
 
@@ -80,11 +80,19 @@ void FW::App::init() {
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
 
+  // texture
+  glGenTextures(1, &texture);
+  glBindTexture(GL_TEXTURE_2D, texture);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
   const char* vertexShaderSource = reinterpret_cast<const char*>(
-    resourceCache.getResource("nested/DefaultVertex.glsl")->buffer()
+    resourceCache.getResource("demo/DefaultVertex.glsl")->buffer()
   );
   const char* fragmentShaderSource = reinterpret_cast<const char*>(
-    resourceCache.getResource("nested/nested2/DefaultFragment.glsl")->buffer()
+    resourceCache.getResource("demo/DefaultFragment.glsl")->buffer()
   );
   FW::Shader vertexShader{FW::Shader::createVertexShader(vertexShaderSource)};
   FW::Shader fragmentShader{FW::Shader::createFragmentShader(fragmentShaderSource)};

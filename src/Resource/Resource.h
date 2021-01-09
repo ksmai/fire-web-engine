@@ -7,22 +7,18 @@ namespace FW {
   class Resource {
   public:
     using Data = std::vector<unsigned char>;
+    using Buffer = const unsigned char*;
+    using Size = std::size_t;
 
-    Resource(Data&& data): data{data} {
-    };
-
+    Resource() =default;
     Resource(const Resource&) =delete;
     Resource& operator=(const Resource&) =delete;
 
-    Resource(Resource&& other): data{std::move(other.data)} {
-    };
-
-    const unsigned char* buffer() const {
-      return &data[0];
+    virtual ~Resource() {
     }
 
-  private:
-    Data data;
+    virtual Buffer buffer() const =0;
+    virtual Size size() const =0;
   };
 }
 
