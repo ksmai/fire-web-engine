@@ -17,11 +17,12 @@ FW::ZipFile::Size FW::ZipFile::findEndOfCentralDirectorySignature(ZipFileData da
   while (bytesSearched < (1<<16) && start >= bytesSearched) {
     std::size_t i = start - bytesSearched;
     if (data[i] == 0x50 && data[i+1] == 0x4b && data[i+2] == 0x05 && data[i+3] == 0x06) {
-      uint32_t commentLength = parseUint32LE(data + i + 20);
+      uint32_t commentLength = parseUint16LE(data + i + 20);
       if (commentLength == bytesSearched) {
         return i;
       }
     }
+    ++bytesSearched;
   }
   std::cout << "Invalid zip file: end of central directory signature not found\n";
   throw "Invalid zip file: end of central directory signature not found";
