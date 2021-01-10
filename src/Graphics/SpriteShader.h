@@ -1,16 +1,15 @@
 #ifndef __SPRITE_SHADER_H__
 #define __SPRITE_SHADER_H__
 
+#include "glm/glm.hpp"
 #include "GLES3/gl3.h"
+#include "Graphics/SpriteVertexArray.h"
 #include "Graphics/Shader.h"
+#include "Graphics/Texture.h"
 
 namespace FW {
   class SpriteShader {
   public:
-    using Ref = GLuint;
-
-    SpriteShader();
-
     SpriteShader(const Shader& vertexShader, const Shader& fragmentShader);
 
     SpriteShader(SpriteShader&&);
@@ -23,12 +22,19 @@ namespace FW {
 
     ~SpriteShader();
 
-    void use() const;
+    void prepareDraw() const;
 
-    Ref get() const;
+    void draw(const Texture&, const glm::mat4&) const;
+
+    void finishDraw() const;
 
   private:
+    SpriteVertexArray vao{0};
     GLuint program;
+    GLuint uModelTransform;
+    GLuint uTexture;
+
+    static const GLint U_TEXTURE;
   };
 }
 

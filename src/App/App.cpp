@@ -65,31 +65,18 @@ void FW::App::init() {
   }
 
   // for temp testing
-  glGenVertexArrays(1, &vao);
   glGenBuffers(1, &vbo);
-  glGenBuffers(1, &ebo);
 
   const float square[] = {
-    -0.5f,  0.5f, 0.0f,  0.0f, 1.0f,
-     0.5f,  0.5f, 0.0f,  1.0f, 1.0f,
-    -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
-     0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
+    0.0f, 1.0f,
+    1.0f, 1.0f,
+    0.0f, 0.0f,
+    1.0f, 0.0f,
   };
-
-  const unsigned int elements[] = {0, 1, 2, 3};
-
-  glBindVertexArray(vao);
+  
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(square), square, GL_STATIC_DRAW);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-  glEnableVertexAttribArray(1);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindVertexArray(0);
 
   // texture
   Resource* face = resourceCache.getResource("demo/heart.png");
@@ -99,9 +86,7 @@ void FW::App::init() {
   const unsigned char* fragmentShaderSource = resourceCache.getResource("demo/SpriteFragment.glsl")->buffer();
   Shader vertexShader{Shader::createVertexShader(vertexShaderSource)};
   Shader fragmentShader{Shader::createFragmentShader(fragmentShaderSource)};
-  program = SpriteShader{vertexShader, fragmentShader};
-  uColor = glGetUniformLocation(program.get(), "uColor");
-  uModelTransform = glGetUniformLocation(program.get(), "uModelTransform");
+  program.reset(new SpriteShader{vertexShader, fragmentShader});
 
   Process::StrongPtr parentProcess{new DelayProcess{3000.0}};
   Process::StrongPtr childProcess{new DelayProcess{2000.0}};
@@ -125,15 +110,12 @@ void FW::App::update() {
   glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
 
-  glBindVertexArray(vao);
-  program.use();
-  glUniform3f(uColor, 1.0f, 1.0f, 1.0f);
   glm::mat4 t{glm::rotate(glm::mat4{1.0f}, static_cast<float>(clock.time()/10000.0f), glm::vec3{0.0f, 0.0f, 1.0f})};
-  glUniformMatrix4fv(uModelTransform, 1, GL_FALSE, glm::value_ptr(t));
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-  texture->bind();
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, 0);
-  glActiveTexture(GL_TEXTURE0);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  glBindVertexArray(0);
+  program->prepareDraw();
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(1);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  program->draw(*texture, t);
+  program->finishDraw();
 }

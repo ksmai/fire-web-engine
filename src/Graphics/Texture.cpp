@@ -26,17 +26,15 @@ FW::Texture::Texture(const ImageResource& img) {
 }
 
 FW::Texture::~Texture() {
-  unbind();
   glDeleteTextures(1, &texture);
 }
 
-void FW::Texture::bind(int unit) {
+void FW::Texture::bind(int unit) const {
   glActiveTexture(GL_TEXTURE0 + unit);
   glBindTexture(GL_TEXTURE_2D, texture);
-  this->unit = unit;
 }
 
-void FW::Texture::unbind() const {
+void FW::Texture::unbind(int unit) const {
   glActiveTexture(GL_TEXTURE0 + unit);
   glBindTexture(GL_TEXTURE_2D, 0);
 }

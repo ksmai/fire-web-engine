@@ -1,9 +1,8 @@
 #include <iostream>
+#include <glm/gtc/type_ptr.hpp>
 #include "Graphics/SpriteShader.h"
 
-FW::SpriteShader::SpriteShader() {
-  program = 0;
-}
+const GLint FW::SpriteShader::U_TEXTURE = 0;
 
 FW::SpriteShader::SpriteShader(const Shader& vertexShader, const Shader& fragmentShader) {
   program = glCreateProgram();
@@ -18,6 +17,9 @@ FW::SpriteShader::SpriteShader(const Shader& vertexShader, const Shader& fragmen
     std::cout << "GLSL program link failed: " << infoLog << "\n";
     throw "GLSL program link failed";
   }
+
+  uModelTransform = glGetUniformLocation(program, "uModelTransform");
+  uTexture = glGetUniformLocation(program, "uTexture");
 }
 
 FW::SpriteShader::SpriteShader(SpriteShader&& other) {
@@ -31,15 +33,23 @@ FW::SpriteShader& FW::SpriteShader::operator=(SpriteShader&& other) {
 }
 
 FW::SpriteShader::~SpriteShader() {
-  if (program != 0) {
-    glDeleteProgram(program);
-  }
+  glDeleteProgram(program);
 }
 
-void FW::SpriteShader::use() const {
+void FW::SpriteShader::prepareDraw() const {
+  vao.bind();
   glUseProgram(program);
+  glUniform1i(uTexture, U_TEXTURE);
 }
 
-FW::SpriteShader::Ref FW::SpriteShader::get() const {
-  return program;
+void FW::SpriteShader::draw(const Texture& texture, const glm::mat4& transform) const {
+  texture.bind(U_TEXTURE);
+  glUniformMatrix4fv(uModelTransform, 1, GL_FALSE, glm::value_ptr(transform));
+  vao.draw();
+  texture.unbind(U_TEXTURE);
+}
+
+void FW::SpriteShader::finishDraw() const {
+  vao.unbind();
+  glUseProgram(0);
 }

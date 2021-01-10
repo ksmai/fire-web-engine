@@ -47,9 +47,9 @@ namespace FW {
     bool initialized{false};
 
     // for temp testing
-    GLuint vao, vbo, ebo, uColor, uModelTransform;
+    GLuint vbo;
     std::unique_ptr<Texture> texture;
-    FW::SpriteShader program;
+    std::unique_ptr<SpriteShader> program;
   };
 }
 
