@@ -8,6 +8,7 @@
 #include <cmath>
 #include "Graphics/Shader.h"
 #include "Graphics/Transform.h"
+#include "Actor/ActorID.h"
 
 FW::App::App(const Config& config) {
   resourceCache.addLoader(new TextLoader{});
@@ -66,7 +67,7 @@ void FW::App::init() {
   // texture
   Resource* img = resourceCache.getResource("demo/roguelikeSheet_transparent.png");
   spriteSheet.reset(new SpriteSheet{Texture{*img}, 16, 16, 1});
-  sprite.reset(new Sprite{2, 1, 3, 2});
+  sprite.reset(new Sprite{13, 7, 3, 2});
 
   const unsigned char* vertexShaderSource = resourceCache.getResource("demo/SpriteVertex.glsl")->buffer();
   const unsigned char* fragmentShaderSource = resourceCache.getResource("demo/SpriteFragment.glsl")->buffer();
@@ -78,6 +79,12 @@ void FW::App::init() {
   Process::StrongPtr childProcess{new DelayProcess{2000.0}};
   parentProcess->attachChild(std::move(childProcess));
   processManager.attachProcess(std::move(parentProcess));
+
+  ActorID actorID{0}, actorID2{0};
+  SDL_Log("sizeof(actorID) = %d", sizeof(actorID));
+  SDL_Log("actorID==actorID2 = %d", actorID==actorID2);
+  actorID.incrementVersion();
+  SDL_Log("actorID==actorID2 = %d", actorID==actorID2);
 
   initialized = true;
 }
@@ -98,6 +105,8 @@ void FW::App::update() {
 
   Transform t;
   t.translate(-0.2f, -0.2f);
+  t.scale(0.5f, 0.5f);
+  t.rotate(3.141592654f*1.0f);
   program->prepareDraw();
   spriteSheet->prepareDraw();
   program->draw(*spriteSheet, *sprite, t);
