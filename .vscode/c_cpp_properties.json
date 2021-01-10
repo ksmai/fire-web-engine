@@ -6,7 +6,8 @@
                 "${default}",
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/src",
-                "${workspaceFolder}/lib"
+                "${workspaceFolder}/lib",
+                "${workspaceFolder}/include/SDL"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
