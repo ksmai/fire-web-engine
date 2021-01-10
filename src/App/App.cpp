@@ -66,8 +66,9 @@ void FW::App::init() {
 
   // for temp testing
   // texture
-  Resource* face = resourceCache.getResource("demo/heart.png");
-  texture.reset(new Texture{*face});
+  Resource* img = resourceCache.getResource("demo/roguelikeSheet_transparent.png");
+  spriteSheet.reset(new SpriteSheet{Texture{*img}, 16, 16, 1});
+  sprite.reset(new Sprite{2, 1, 3, 2});
 
   const unsigned char* vertexShaderSource = resourceCache.getResource("demo/SpriteVertex.glsl")->buffer();
   const unsigned char* fragmentShaderSource = resourceCache.getResource("demo/SpriteFragment.glsl")->buffer();
@@ -100,6 +101,8 @@ void FW::App::update() {
   //glm::mat4 t{glm::rotate(glm::mat4{1.0f}, static_cast<float>(clock.time()/10000.0f), glm::vec3{0.0f, 0.0f, 1.0f})};
   glm::mat4 t{1.0f};
   program->prepareDraw();
-  program->draw(*texture, t);
+  spriteSheet->prepareDraw();
+  program->draw(*spriteSheet, *sprite, t);
+  spriteSheet->finishDraw();
   program->finishDraw();
 }

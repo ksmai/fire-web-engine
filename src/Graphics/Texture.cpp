@@ -5,7 +5,10 @@ FW::Texture::Texture(const Resource& resource):
 {
 }
 
-FW::Texture::Texture(const ImageResource& img) {
+FW::Texture::Texture(const ImageResource& img):
+  width{img.width()},
+  height{img.height()}
+{
   glGenTextures(1, &texture);
   bind();
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -21,12 +24,24 @@ FW::Texture::Texture(const ImageResource& img) {
     SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "unknown pixel format");
     throw "unknown pixel format";
   }
-  glTexImage2D(GL_TEXTURE_2D, 0, format, img.width(), img.height(), 0, format, GL_UNSIGNED_BYTE, img.buffer());
+  glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, img.buffer());
   unbind();
 }
 
+FW::Texture::Texture(Texture&& other):
+  texture{other.texture},
+  width{other.width},
+  height{other.height}
+{
+  other.texture = 0;
+  other.width = 0;
+  other.height = 0;
+}
+
 FW::Texture::~Texture() {
-  glDeleteTextures(1, &texture);
+  if (texture != 0) {
+    glDeleteTextures(1, &texture);
+  }
 }
 
 void FW::Texture::bind(int unit) const {
@@ -37,4 +52,12 @@ void FW::Texture::bind(int unit) const {
 void FW::Texture::unbind(int unit) const {
   glActiveTexture(GL_TEXTURE0 + unit);
   glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+unsigned int FW::Texture::getWidth() const {
+  return width;
+}
+
+unsigned int FW::Texture::getHeight() const {
+  return height;
 }

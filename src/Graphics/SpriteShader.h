@@ -5,7 +5,8 @@
 #include "GLES3/gl3.h"
 #include "Graphics/SpriteVertexArray.h"
 #include "Graphics/Shader.h"
-#include "Graphics/Texture.h"
+#include "Graphics/SpriteSheet.h"
+#include "Graphics/Sprite.h"
 
 namespace FW {
   class SpriteShader {
@@ -24,7 +25,7 @@ namespace FW {
 
     void prepareDraw() const;
 
-    void draw(const Texture&, const glm::mat4&) const;
+    void draw(const SpriteSheet&, const Sprite&, const glm::mat4&) const;
 
     void finishDraw() const;
 
@@ -33,6 +34,10 @@ namespace FW {
     GLuint program;
     GLuint uModelTransform;
     GLuint uTexture;
+    GLuint uSpriteInfoX;
+    GLuint uSpriteInfoY;
+    GLuint uSpriteInfoW;
+    GLuint uSpriteInfoH;
 
     static const GLint U_TEXTURE;
   };

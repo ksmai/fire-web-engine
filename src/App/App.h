@@ -12,6 +12,8 @@
 #include "Process/DelayProcess.h"
 #include "Graphics/SpriteShader.h"
 #include "Graphics/Texture.h"
+#include "Graphics/SpriteSheet.h"
+#include "Graphics/Sprite.h"
 #include "memory"
 
 namespace FW {
@@ -47,7 +49,8 @@ namespace FW {
     bool initialized{false};
 
     // for temp testing
-    std::unique_ptr<Texture> texture;
+    std::unique_ptr<SpriteSheet> spriteSheet;
+    std::unique_ptr<Sprite> sprite;
     std::unique_ptr<SpriteShader> program;
   };
 }
