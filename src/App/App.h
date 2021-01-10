@@ -11,6 +11,8 @@
 #include <GLES3/gl3.h>
 #include "Process/DelayProcess.h"
 #include "Graphics/Program.h"
+#include "Graphics/Texture.h"
+#include "memory"
 
 namespace FW {
   class App {
@@ -45,7 +47,8 @@ namespace FW {
     bool initialized{false};
 
     // for temp testing
-    GLuint vao, vbo, ebo, uColor, texture, uModelTransform;
+    GLuint vao, vbo, ebo, uColor, uModelTransform;
+    std::unique_ptr<Texture> texture;
     FW::Program program;
   };
 }

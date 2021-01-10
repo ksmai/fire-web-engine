@@ -48,6 +48,9 @@ FW::App::App(const Config& config) {
 
   SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "GL Version = %d", glGetString(GL_VERSION));
   SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "GLSL Version = %d", glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_BLEND);
 }
 
 FW::App::~App() {
@@ -67,10 +70,10 @@ void FW::App::init() {
   glGenBuffers(1, &ebo);
 
   const float square[] = {
-    -0.5f,  0.5f, 0.0f,  0.0f, 2.0f,
-     0.5f,  0.5f, 0.0f,  2.0f, 2.0f,
+    -0.5f,  0.5f, 0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f, 0.0f,  1.0f, 1.0f,
     -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
-     0.5f, -0.5f, 0.0f,  2.0f, 0.0f,
+     0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
   };
 
   const unsigned int elements[] = {0, 1, 2, 3};
@@ -89,16 +92,8 @@ void FW::App::init() {
   glBindVertexArray(0);
 
   // texture
-  glGenTextures(1, &texture);
-  glBindTexture(GL_TEXTURE_2D, texture);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  Resource::Buffer img{resourceCache.getResource("demo/face.png")->buffer()};
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 16, 16, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
-  glGenerateMipmap(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, 0);
+  Resource* face = resourceCache.getResource("demo/heart.png");
+  texture.reset(new Texture{*face});
 
   const char* vertexShaderSource = reinterpret_cast<const char*>(
     resourceCache.getResource("demo/DefaultVertex.glsl")->buffer()
@@ -106,14 +101,14 @@ void FW::App::init() {
   const char* fragmentShaderSource = reinterpret_cast<const char*>(
     resourceCache.getResource("demo/DefaultFragment.glsl")->buffer()
   );
-  FW::Shader vertexShader{FW::Shader::createVertexShader(vertexShaderSource)};
-  FW::Shader fragmentShader{FW::Shader::createFragmentShader(fragmentShaderSource)};
-  program = FW::Program{vertexShader, fragmentShader};
+  Shader vertexShader{Shader::createVertexShader(vertexShaderSource)};
+  Shader fragmentShader{Shader::createFragmentShader(fragmentShaderSource)};
+  program = Program{vertexShader, fragmentShader};
   uColor = glGetUniformLocation(program.get(), "uColor");
   uModelTransform = glGetUniformLocation(program.get(), "uModelTransform");
 
-  FW::Process::StrongPtr parentProcess{new FW::DelayProcess{3000.0}};
-  FW::Process::StrongPtr childProcess{new FW::DelayProcess{2000.0}};
+  Process::StrongPtr parentProcess{new DelayProcess{3000.0}};
+  Process::StrongPtr childProcess{new DelayProcess{2000.0}};
   parentProcess->attachChild(std::move(childProcess));
   processManager.attachProcess(std::move(parentProcess));
 
@@ -137,16 +132,12 @@ void FW::App::update() {
   glBindVertexArray(vao);
   program.use();
   glUniform3f(uColor, 1.0f, 1.0f, 1.0f);
-  glm::mat4 t{glm::rotate(glm::mat4{1.0f}, static_cast<float>(clock.time()/100.0f), glm::vec3{0.0f, 0.0f, 1.0f})};
+  glm::mat4 t{glm::rotate(glm::mat4{1.0f}, static_cast<float>(clock.time()/10000.0f), glm::vec3{0.0f, 0.0f, 1.0f})};
   glUniformMatrix4fv(uModelTransform, 1, GL_FALSE, glm::value_ptr(t));
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-  glBindTexture(GL_TEXTURE_2D, texture);
+  texture->bind();
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, 0);
   glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
-
-  glm::vec2 myVec{42.42f, 3.14159f};
-  SDL_Log("myVec.x = %f", myVec.x);
 }

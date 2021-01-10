@@ -8,20 +8,18 @@
 namespace FW {
   class ImageResource: public Resource {
   public:
-    ImageResource(SDL_Surface* img): img{img} {
-    }
+    ImageResource(SDL_Surface* img);
 
-    virtual ~ImageResource() {
-      SDL_FreeSurface(img);
-    }
+    virtual ~ImageResource();
 
-    virtual Resource::Buffer buffer() const override {
-      return static_cast<Resource::Buffer>(img->pixels);
-    }
+    virtual Resource::Buffer buffer() const override;
 
-    virtual Resource::Size size() const override {
-      return img->pitch * img->h;
-    }
+    virtual Resource::Size size() const override;
+
+    std::size_t width() const;
+    std::size_t height() const;
+    std::size_t colors() const;
+    unsigned int redMask() const;
 
   private:
     SDL_Surface* img;
