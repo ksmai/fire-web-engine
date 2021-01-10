@@ -22,7 +22,8 @@ FW::Shader::Ref FW::Shader::get() const {
 }
 
 void FW::Shader::compile(Source source) const {
-  glShaderSource(shader, 1, &source, nullptr);
+  const char* glSource{reinterpret_cast<const char*>(source)};
+  glShaderSource(shader, 1, &glSource, nullptr);
   glCompileShader(shader);
   GLint success;
   glGetShaderiv(shader, GL_COMPILE_STATUS, &success);

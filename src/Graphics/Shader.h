@@ -7,7 +7,7 @@ namespace FW {
   class Shader {
   public:
     using Type = GLuint;
-    using Source = const char*;
+    using Source = const unsigned char*;
     using Ref = GLuint;
 
     friend class Program;
