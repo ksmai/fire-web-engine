@@ -29,9 +29,10 @@ const FW::SpriteInfo FW::SpriteSheet::getSpriteInfo(const Sprite& sprite) const 
   SpriteInfo result;
   float textureWidth = static_cast<float>(texture.getWidth());
   float textureHeight = static_cast<float>(texture.getHeight());
+  float totalHeight = static_cast<float>((spriteHeight + margin) * (sprite.spanY - 1) + spriteHeight);
   result.x = static_cast<float>(sprite.x * (spriteWidth + margin)) / textureWidth;
-  result.y = 1.0f - static_cast<float>(sprite.y * (spriteHeight + margin) + spriteHeight) / textureHeight;
+  result.y = 1.0f - static_cast<float>(sprite.y * (spriteHeight + margin) + totalHeight) / textureHeight;
   result.w = static_cast<float>((spriteWidth + margin) * (sprite.spanX - 1) + spriteWidth) / textureWidth;
-  result.h = static_cast<float>((spriteHeight + margin) * (sprite.spanY - 1) + spriteHeight) / textureHeight;
+  result.h = totalHeight / textureHeight;
   return result;
 }

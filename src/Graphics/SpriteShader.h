@@ -1,12 +1,12 @@
 #ifndef __SPRITE_SHADER_H__
 #define __SPRITE_SHADER_H__
 
-#include "glm/glm.hpp"
 #include "GLES3/gl3.h"
 #include "Graphics/SpriteVertexArray.h"
 #include "Graphics/Shader.h"
 #include "Graphics/SpriteSheet.h"
 #include "Graphics/Sprite.h"
+#include "Graphics/Transform.h"
 
 namespace FW {
   class SpriteShader {
@@ -25,7 +25,7 @@ namespace FW {
 
     void prepareDraw() const;
 
-    void draw(const SpriteSheet&, const Sprite&, const glm::mat4&) const;
+    void draw(const SpriteSheet&, const Sprite&, const Transform&) const;
 
     void finishDraw() const;
 

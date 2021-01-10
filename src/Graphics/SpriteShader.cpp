@@ -1,5 +1,4 @@
 #include <iostream>
-#include <glm/gtc/type_ptr.hpp>
 #include "Graphics/SpriteShader.h"
 #include "Graphics/SpriteInfo.h"
 
@@ -47,14 +46,14 @@ void FW::SpriteShader::prepareDraw() const {
   glUniform1i(uTexture, U_TEXTURE);
 }
 
-void FW::SpriteShader::draw(const SpriteSheet& spriteSheet, const Sprite& sprite, const glm::mat4& transform) const {
+void FW::SpriteShader::draw(const SpriteSheet& spriteSheet, const Sprite& sprite, const Transform& transform) const {
   // assumes spriteSheet.prepareDraw has been called before
   const SpriteInfo spriteInfo = spriteSheet.getSpriteInfo(sprite);
   glUniform1f(uSpriteInfoX, spriteInfo.x);
   glUniform1f(uSpriteInfoY, spriteInfo.y);
   glUniform1f(uSpriteInfoW, spriteInfo.w);
   glUniform1f(uSpriteInfoH, spriteInfo.h);
-  glUniformMatrix4fv(uModelTransform, 1, GL_FALSE, glm::value_ptr(transform));
+  glUniformMatrix4fv(uModelTransform, 1, GL_FALSE, transform.getMatrix());
   vao.draw();
   // assumes spriteSheet.prepareDraw will be called later for proper batching
 }

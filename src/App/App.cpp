@@ -1,7 +1,4 @@
 #include "SDL_image.h"
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
 #include "App/App.h"
 #include "Resource/TextLoader.h"
 #include "Resource/RawLoader.h"
@@ -10,6 +7,7 @@
 // for temp testing
 #include <cmath>
 #include "Graphics/Shader.h"
+#include "Graphics/Transform.h"
 
 FW::App::App(const Config& config) {
   resourceCache.addLoader(new TextLoader{});
@@ -98,8 +96,8 @@ void FW::App::update() {
   glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
 
-  //glm::mat4 t{glm::rotate(glm::mat4{1.0f}, static_cast<float>(clock.time()/10000.0f), glm::vec3{0.0f, 0.0f, 1.0f})};
-  glm::mat4 t{1.0f};
+  Transform t;
+  t.translate(-0.2f, -0.2f);
   program->prepareDraw();
   spriteSheet->prepareDraw();
   program->draw(*spriteSheet, *sprite, t);
