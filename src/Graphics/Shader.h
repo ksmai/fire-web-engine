@@ -10,7 +10,7 @@ namespace FW {
     using Source = const unsigned char*;
     using Ref = GLuint;
 
-    friend class Program;
+    friend class SpriteShader;
 
     Shader(const Shader&) =delete;
 

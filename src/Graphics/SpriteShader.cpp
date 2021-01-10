@@ -1,11 +1,11 @@
 #include <iostream>
-#include "Graphics/Program.h"
+#include "Graphics/SpriteShader.h"
 
-FW::Program::Program() {
+FW::SpriteShader::SpriteShader() {
   program = 0;
 }
 
-FW::Program::Program(const Shader& vertexShader, const Shader& fragmentShader) {
+FW::SpriteShader::SpriteShader(const Shader& vertexShader, const Shader& fragmentShader) {
   program = glCreateProgram();
   glAttachShader(program, vertexShader.get());
   glAttachShader(program, fragmentShader.get());
@@ -20,26 +20,26 @@ FW::Program::Program(const Shader& vertexShader, const Shader& fragmentShader) {
   }
 }
 
-FW::Program::Program(Program&& other) {
+FW::SpriteShader::SpriteShader(SpriteShader&& other) {
   program = other.program;
   other.program = 0;
 }
 
-FW::Program& FW::Program::operator=(Program&& other) {
+FW::SpriteShader& FW::SpriteShader::operator=(SpriteShader&& other) {
   std::swap(program, other.program);
   return *this;
 }
 
-FW::Program::~Program() {
+FW::SpriteShader::~SpriteShader() {
   if (program != 0) {
     glDeleteProgram(program);
   }
 }
 
-void FW::Program::use() const {
+void FW::SpriteShader::use() const {
   glUseProgram(program);
 }
 
-FW::Program::Ref FW::Program::get() const {
+FW::SpriteShader::Ref FW::SpriteShader::get() const {
   return program;
 }

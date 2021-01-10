@@ -10,7 +10,7 @@
 // for temp testing
 #include <GLES3/gl3.h>
 #include "Process/DelayProcess.h"
-#include "Graphics/Program.h"
+#include "Graphics/SpriteShader.h"
 #include "Graphics/Texture.h"
 #include "memory"
 
@@ -49,7 +49,7 @@ namespace FW {
     // for temp testing
     GLuint vao, vbo, ebo, uColor, uModelTransform;
     std::unique_ptr<Texture> texture;
-    FW::Program program;
+    FW::SpriteShader program;
   };
 }
 

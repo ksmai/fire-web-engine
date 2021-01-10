@@ -95,11 +95,11 @@ void FW::App::init() {
   Resource* face = resourceCache.getResource("demo/heart.png");
   texture.reset(new Texture{*face});
 
-  const unsigned char* vertexShaderSource = resourceCache.getResource("demo/DefaultVertex.glsl")->buffer();
-  const unsigned char* fragmentShaderSource = resourceCache.getResource("demo/DefaultFragment.glsl")->buffer();
+  const unsigned char* vertexShaderSource = resourceCache.getResource("demo/SpriteVertex.glsl")->buffer();
+  const unsigned char* fragmentShaderSource = resourceCache.getResource("demo/SpriteFragment.glsl")->buffer();
   Shader vertexShader{Shader::createVertexShader(vertexShaderSource)};
   Shader fragmentShader{Shader::createFragmentShader(fragmentShaderSource)};
-  program = Program{vertexShader, fragmentShader};
+  program = SpriteShader{vertexShader, fragmentShader};
   uColor = glGetUniformLocation(program.get(), "uColor");
   uModelTransform = glGetUniformLocation(program.get(), "uModelTransform");
 
