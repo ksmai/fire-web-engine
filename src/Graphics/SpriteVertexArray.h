@@ -6,7 +6,7 @@
 namespace FW {
   class SpriteVertexArray {
   public:
-    SpriteVertexArray(int location);
+    SpriteVertexArray(int vertexLocation, int texCoordLocation);
     SpriteVertexArray(const SpriteVertexArray&) =delete;
     SpriteVertexArray& operator=(const SpriteVertexArray&) =delete;
     ~SpriteVertexArray();

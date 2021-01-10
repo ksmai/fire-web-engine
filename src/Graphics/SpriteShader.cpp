@@ -45,6 +45,10 @@ void FW::SpriteShader::prepareDraw() const {
 void FW::SpriteShader::draw(const Texture& texture, const glm::mat4& transform) const {
   texture.bind(U_TEXTURE);
   glUniformMatrix4fv(uModelTransform, 1, GL_FALSE, glm::value_ptr(transform));
+  glUniform1f(glGetUniformLocation(program, "uSpriteInfo.x"), 0.0f);
+  glUniform1f(glGetUniformLocation(program, "uSpriteInfo.y"), 0.0f);
+  glUniform1f(glGetUniformLocation(program, "uSpriteInfo.w"), 1.0f);
+  glUniform1f(glGetUniformLocation(program, "uSpriteInfo.h"), 1.0f);
   vao.draw();
   texture.unbind(U_TEXTURE);
 }

@@ -29,7 +29,7 @@ namespace FW {
     void finishDraw() const;
 
   private:
-    SpriteVertexArray vao{0};
+    SpriteVertexArray vao{0, 1};
     GLuint program;
     GLuint uModelTransform;
     GLuint uTexture;
