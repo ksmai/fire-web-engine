@@ -5,6 +5,7 @@
 #include <memory>
 #include "SDL/SDL.h"
 #include "File/Data.h"
+#include "Graphics/Color.h"
 #include "Graphics/Sprite.h"
 #include "Graphics/SpriteShader.h"
 
@@ -16,6 +17,8 @@ namespace FW {
     Graphics& operator=(const Graphics&) =delete;
     ~Graphics();
 
+    void setClearColor(const Color&);
+
     void prepareDraw() const;
 
     void prepareDrawSprite() const;
@@ -23,6 +26,7 @@ namespace FW {
     void finishDrawSprite() const;
 
   private:
+    Color clearColor;
     std::unique_ptr<SpriteShader> spriteShader;
     SDL_Window* window;
     SDL_GLContext context;

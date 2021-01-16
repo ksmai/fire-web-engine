@@ -48,8 +48,12 @@ FW::Graphics::~Graphics() {
   SDL_Quit();
 }
 
+void FW::Graphics::setClearColor(const Color& color) {
+  clearColor = color;
+}
+
 void FW::Graphics::prepareDraw() const {
-  glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+  glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
   glClear(GL_COLOR_BUFFER_BIT);
 }
 

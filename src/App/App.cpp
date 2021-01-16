@@ -6,6 +6,7 @@
 #include "File/ZipFile.h"
 #include "File/ImageFile.h"
 #include "Graphics/Transform.h"
+#include "Graphics/Color.h"
 #include "Actor/ActorID.h"
 
 FW::App::App(const Config& config):
@@ -29,6 +30,7 @@ void FW::App::init() {
 
   // for temp testing
   // texture
+  graphics.setClearColor(FW::Color{0.7f, 0.42f, 0.66f, 1.0f});
   ZipFile zipFile{remoteFile.getData()};
   remoteFile.close();
   spriteSheet.reset(new SpriteSheet{zipFile.getFileContent("demo/roguelikeSheet_transparent.png"), 16, 16, 1});
