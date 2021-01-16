@@ -2,19 +2,18 @@
 #define __APP_H__
 
 #include <string>
-#include <SDL/SDL.h>
-#include "File/RemoteFile.h"
-#include "Process/ProcessManager.h"
 #include "App/Clock.h"
+#include "Graphics/Graphics.h"
 
 // for temp testing
-#include <GLES3/gl3.h>
+#include "Process/ProcessManager.h"
+#include "File/RemoteFile.h"
 #include "Process/DelayProcess.h"
 #include "Graphics/SpriteShader.h"
 #include "Graphics/Texture.h"
 #include "Graphics/SpriteSheet.h"
 #include "Graphics/SpritePosition.h"
-#include "memory"
+#include <memory>
 
 namespace FW {
   class App {
@@ -28,7 +27,7 @@ namespace FW {
 
     explicit App(const Config& config);
 
-    ~App();
+    ~App() =default;
 
     App(const App&) =delete;
 
@@ -39,10 +38,8 @@ namespace FW {
     void update();
 
   private:
-    SDL_Window* window;
-    SDL_GLContext context;
-
-    RemoteFile remoteFile{"/resources.zip"};
+    Graphics graphics;
+    RemoteFile remoteFile;
     Clock clock;
     ProcessManager processManager;
     bool initialized{false};

@@ -10,49 +10,11 @@
 #include "Graphics/Transform.h"
 #include "Actor/ActorID.h"
 
-FW::App::App(const Config& config) {
+FW::App::App(const Config& config):
+  graphics{config.title, config.canvasWidth, config.canvasHeight},
+  remoteFile{"/resources.zip"}
+{
   remoteFile.open();
-
-  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER)) {
-    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s", SDL_GetError());
-    throw "SDL_Init failed";
-  }
-
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-
-  window = SDL_CreateWindow(
-    config.title.c_str(),
-    SDL_WINDOWPOS_UNDEFINED,
-    SDL_WINDOWPOS_UNDEFINED,
-    config.canvasWidth,
-    config.canvasHeight,
-    SDL_WINDOW_OPENGL
-  );
-  if (window == nullptr) {
-    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create window: %s", SDL_GetError());
-    throw "SDL_CreateWindow failed";
-  }
-
-  context = SDL_GL_CreateContext(window);
-  if (context == nullptr) {
-    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create gl context: %s", SDL_GetError());
-    throw "SDL_GL_CreateContext failed";
-  }
-
-  SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "GL Version = %d", glGetString(GL_VERSION));
-  SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "GLSL Version = %d", glGetString(GL_SHADING_LANGUAGE_VERSION));
-
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_BLEND);
-}
-
-FW::App::~App() {
-  SDL_GL_DeleteContext(context);
-  SDL_DestroyWindow(window);
-  SDL_Quit();
 }
 
 void FW::App::init() {
