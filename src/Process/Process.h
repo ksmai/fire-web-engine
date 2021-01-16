@@ -10,8 +10,7 @@ namespace FW {
       Uninitialized,
       Running,
       Succeeded,
-      Aborted,
-      Removed
+      Aborted
     };
 
     using StrongPtr = std::unique_ptr<Process>;
@@ -48,10 +47,6 @@ namespace FW {
       state = State::Aborted;
     }
 
-    void remove() {
-      state = State::Removed;
-    }
-
     bool isUninitialized() const {
       return state == State::Uninitialized;
     }
@@ -70,10 +65,6 @@ namespace FW {
 
     bool isAborted() const {
       return state == State::Aborted;
-    }
-
-    bool isRemoved() const {
-      return state == State::Removed;
     }
 
     void attachChild(StrongPtr newChild) {

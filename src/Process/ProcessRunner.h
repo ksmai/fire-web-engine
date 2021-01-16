@@ -13,6 +13,8 @@ namespace FW {
 
   private:
     std::vector<Process::StrongPtr> processes;
+
+    static const std::size_t MAX_PROCESSES;
   };
 }
 #endif
