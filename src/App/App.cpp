@@ -78,18 +78,18 @@ void FW::App::init() {
   actorID.incrementVersion();
   SDL_Log("actorID==actorID2 = %d", actorID==actorID2);
 
-  eventManager.subscribe<MyData2>(std::bind(&MyListenerObject::myListenMethod, &obj, std::placeholders::_1));
-  eventManager.emit<MyData2>({"NotCalled"});
-  eventManager.emit<MyData1>({1, 2});
-  eventManager.subscribe<MyData1>(myListener1);
-  eventManager.emit<MyData2>({"NotCalled2"});
-  eventManager.emit<MyData1>({3, 4});
-  eventManager.subscribe<MyData2>(myListener2);
-  eventManager.emit<MyData2>({"Called!!"});
-  eventManager.emit<MyData1>({5, 6});
-  eventManager.subscribe<MyData1>(myListener3);
-  eventManager.emit<MyData2>({"Called Again!!"});
-  eventManager.emit<MyData1>({7, 8});
+  eventBus.subscribe<MyData2>(std::bind(&MyListenerObject::myListenMethod, &obj, std::placeholders::_1));
+  eventBus.emit<MyData2>({"NotCalled"});
+  eventBus.emit<MyData1>({1, 2});
+  eventBus.subscribe<MyData1>(myListener1);
+  eventBus.emit<MyData2>({"NotCalled2"});
+  eventBus.emit<MyData1>({3, 4});
+  eventBus.subscribe<MyData2>(myListener2);
+  eventBus.emit<MyData2>({"Called!!"});
+  eventBus.emit<MyData1>({5, 6});
+  eventBus.subscribe<MyData1>(myListener3);
+  eventBus.emit<MyData2>({"Called Again!!"});
+  eventBus.emit<MyData1>({7, 8});
 
   initialized = true;
 }

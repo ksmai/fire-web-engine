@@ -6,7 +6,7 @@
 #include "Graphics/Graphics.h"
 
 // for temp testing
-#include "Event/EventManager.h"
+#include "Event/EventBus.h"
 #include "Process/ProcessManager.h"
 #include "File/RemoteFile.h"
 #include "Process/DelayProcess.h"
@@ -38,7 +38,7 @@ namespace FW {
 
   private:
     Graphics graphics;
-    EventManager eventManager;
+    EventBus eventBus;
     RemoteFile remoteFile;
     Clock clock;
     ProcessManager processManager;

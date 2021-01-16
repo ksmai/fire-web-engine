@@ -1,12 +1,12 @@
-#ifndef __EVENT_MANAGER__
-#define __EVENT_MANAGER__
+#ifndef __EVENT_BUS__
+#define __EVENT_BUS__
 
 #include <vector>
 #include <functional>
 #include "Event/Event.h"
 
 namespace FW {
-  class EventManager {
+  class EventBus {
   public:
     template <typename T>
     using EventListener = std::function<void(const T&)>;
