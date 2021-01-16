@@ -7,7 +7,7 @@
 
 // for temp testing
 #include "Event/EventBus.h"
-#include "Process/ProcessManager.h"
+#include "Process/ProcessRunner.h"
 #include "File/RemoteFile.h"
 #include "Process/DelayProcess.h"
 #include "Graphics/SpriteSheet.h"
@@ -41,7 +41,7 @@ namespace FW {
     EventBus eventBus;
     RemoteFile remoteFile;
     Clock clock;
-    ProcessManager processManager;
+    ProcessRunner processRunner;
     bool initialized{false};
 
     // for temp testing

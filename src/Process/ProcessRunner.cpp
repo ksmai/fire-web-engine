@@ -1,8 +1,8 @@
 #include <algorithm>
 #include <functional>
-#include "Process/ProcessManager.h"
+#include "Process/ProcessRunner.h"
 
-void FW::ProcessManager::update(double dt) {
+void FW::ProcessRunner::update(double dt) {
   std::size_t numProcesses = processes.size();
   for (std::size_t i = 0; i < numProcesses; ++i) {
     auto currentProcess = processes[i].get();
@@ -40,6 +40,6 @@ void FW::ProcessManager::update(double dt) {
   );
 }
 
-void FW::ProcessManager::attachProcess(Process::StrongPtr process) {
+void FW::ProcessRunner::attachProcess(Process::StrongPtr process) {
   processes.push_back(std::move(process));
 }

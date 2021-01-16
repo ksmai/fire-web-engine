@@ -70,7 +70,7 @@ void FW::App::init() {
   Process::StrongPtr parentProcess{new DelayProcess{3000.0}};
   Process::StrongPtr childProcess{new DelayProcess{2000.0}};
   parentProcess->attachChild(std::move(childProcess));
-  processManager.attachProcess(std::move(parentProcess));
+  processRunner.attachProcess(std::move(parentProcess));
 
   ActorID actorID{0}, actorID2{0};
   SDL_Log("sizeof(actorID) = %d", sizeof(actorID));
@@ -102,7 +102,7 @@ void FW::App::update() {
   clock.update();
   double dt = clock.dt();
 
-  processManager.update(dt);
+  processRunner.update(dt);
 
   // for temp testing
   graphics.prepareDraw();

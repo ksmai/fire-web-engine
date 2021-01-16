@@ -5,7 +5,7 @@
 #include "Process/Process.h"
 
 namespace FW {
-  class ProcessManager {
+  class ProcessRunner {
   public:
     void update(double dt);
     
