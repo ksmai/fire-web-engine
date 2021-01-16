@@ -1,7 +1,8 @@
 #include <iostream>
 #include "Resource/ResourceCache.h"
 
-FW::ResourceCache::ResourceCache(): fetcher{Fetcher{this}} {
+FW::ResourceCache::ResourceCache() {
+  file.open();
 }
 
 void FW::ResourceCache::addLoader(Loader* loader) {
@@ -9,40 +10,24 @@ void FW::ResourceCache::addLoader(Loader* loader) {
 }
 
 bool FW::ResourceCache::isLoading() const {
-  return numLoading > 0;
+  return !file.isOpened() && !file.isError();
 }
 
-void FW::ResourceCache::loadZipFile(const std::string& url) {
-  ++numLoading;
-  fetcher.fetch(url, fetchSuccessCallback, fetchErrorCallback);
-}
-
-void FW::ResourceCache::fetchSuccessCallback(emscripten_fetch_t* fetch) {
-  if (!fetch->userData) {
-    std::cout << "Can't find ResourceCache instance in fetchSuccessCallback\n";
-    throw "Can't find ResourceCache instance in fetchSuccessCallback\n";
+void FW::ResourceCache::update() {
+  if (processed || isLoading()) {
+    return;
   }
-  std::cout << "Downloaded " << fetch->numBytes << " bytes from " << fetch->url << "\n";
-  static_cast<ResourceCache*>(fetch->userData)->processZipFile(
-    reinterpret_cast<ZipFile::ZipFileData>(fetch->data),
-    fetch->numBytes
-  );
-  emscripten_fetch_close(fetch);
+  processed = true;
+  processZipFile();
 }
 
-void FW::ResourceCache::fetchErrorCallback(emscripten_fetch_t* fetch) {
-  std::cout << "Fail to download " << fetch->url << " [" << fetch->status << "]\n";
-  emscripten_fetch_close(fetch);
-  throw "fetch error";
-}
-
-void FW::ResourceCache::processZipFile(ZipFile::ZipFileData data, ZipFile::Size size) {
-  ZipFile file{data, size};
-  for (std::size_t i = 0; i < file.getNumFiles(); ++i) {
-    if (file.getFileSize(i) == 0) {
+void FW::ResourceCache::processZipFile() {
+  ZipFile f{file.getData()};
+  for (std::size_t i = 0; i < f.getNumFiles(); ++i) {
+    if (f.getFileSize(i) == 0) {
       continue;
     }
-    std::string name = file.getFileName(i);
+    std::string name = f.getFileName(i);
     if (resources.find(name) != resources.end()) {
       std::cout << "Duplicated file name: " << name << "\n";
       throw "Duplicated file name";
@@ -51,10 +36,9 @@ void FW::ResourceCache::processZipFile(ZipFile::ZipFileData data, ZipFile::Size 
     if (!loader) {
       continue;
     }
-    resources[name] = std::unique_ptr<Resource>{loader->load(file.getFileContent(i))};
+    resources[name] = std::unique_ptr<Resource>{loader->load(f.getFileContent(i))};
     std::cout << "Loaded: " << name << "\n";
   }
-  --numLoading;
 }
 
 FW::Loader* FW::ResourceCache::getLoader(const std::string& name) const {

@@ -14,7 +14,6 @@ FW::App::App(const Config& config) {
   resourceCache.addLoader(new TextLoader{});
   resourceCache.addLoader(new ImageLoader{});
   resourceCache.addLoader(new RawLoader{});
-  resourceCache.loadZipFile(config.sharedResourceFile);
 
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER)) {
     SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s", SDL_GetError());
@@ -62,6 +61,7 @@ void FW::App::init() {
   if (initialized || resourceCache.isLoading()) {
     return;
   }
+  resourceCache.update();
 
   // for temp testing
   // texture
