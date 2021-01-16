@@ -1,8 +1,8 @@
+#include "App/abort.h"
 #include "App/App.h"
+#include "App/Logger.h"
 
 // for temp testing
-#include "App/Logger.h"
-#include "App/abort.h"
 #include "File/ZipFile.h"
 #include "File/ImageFile.h"
 #include "Graphics/Transform.h"
@@ -10,6 +10,8 @@
 #include "Actor/ActorID.h"
 #include <iostream>
 #include <functional>
+
+bool FW::App::created{false};
 
 struct MyData1 {
   int x, y;
@@ -43,7 +45,22 @@ FW::App::App(const Config& config):
   graphics{config.title, config.canvasWidth, config.canvasHeight},
   remoteFile{"/resources.zip"}
 {
+  if (created) {
+    Logger::error("Cannot create more than 1 App");
+    abort();
+  }
+  created = true;
+  if (SDL_Init(0)) {
+    Logger::error("SDL_Init() failed: %s", SDL_GetError());
+    abort();
+  }
+
   remoteFile.open();
+}
+
+FW::App::~App() {
+  SDL_Quit();
+  created = false;
 }
 
 void FW::App::init() {

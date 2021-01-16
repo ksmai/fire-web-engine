@@ -3,9 +3,17 @@
 #include "App/Logger.h"
 #include "Graphics/Graphics.h"
 
+bool FW::Graphics::created{false};
+
 FW::Graphics::Graphics(const std::string& title, std::size_t canvasWidth, std::size_t canvasHeight) {
-  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER)) {
-    Logger::error("Couldn't initialize SDL: %s", SDL_GetError());
+  if (created) {
+    Logger::error("Cannot create more than 1 Graphics");
+    abort();
+  }
+  created = true;
+
+  if (SDL_InitSubSystem(SDL_INIT_VIDEO)) {
+    Logger::error("SDL_InitSubSystem(SDL_INIT_VIDEO) failed: %s", SDL_GetError());
     abort();
   }
 
@@ -45,7 +53,8 @@ FW::Graphics::Graphics(const std::string& title, std::size_t canvasWidth, std::s
 FW::Graphics::~Graphics() {
   SDL_GL_DeleteContext(context);
   SDL_DestroyWindow(window);
-  SDL_Quit();
+  SDL_QuitSubSystem(SDL_INIT_VIDEO);
+  created = false;
 }
 
 void FW::Graphics::setClearColor(const Color& color) {

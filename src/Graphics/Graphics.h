@@ -26,6 +26,7 @@ namespace FW {
     void finishDrawSprite() const;
 
   private:
+    static bool created;
     Color clearColor;
     std::unique_ptr<SpriteShader> spriteShader;
     SDL_Window* window;

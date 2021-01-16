@@ -25,18 +25,17 @@ namespace FW {
     };
 
     explicit App(const Config& config);
-
-    ~App() =default;
-
     App(const App&) =delete;
-
     App& operator=(const App&) =delete;
+    ~App();
 
     void init();
 
     void update();
 
   private:
+    static bool created;
+
     Graphics graphics;
     EventBus eventBus;
     RemoteFile remoteFile;

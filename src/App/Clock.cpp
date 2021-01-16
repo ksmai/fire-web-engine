@@ -1,6 +1,26 @@
+#include "App/abort.h"
 #include "App/Clock.h"
+#include "App/Logger.h"
 
-FW::Clock::Clock(): prevCounter{0}, counter{SDL_GetPerformanceCounter()} {
+bool FW::Clock::created{false};
+
+FW::Clock::Clock() {
+  if (created) {
+    Logger::error("Cannot create more than 1 Clock");
+    abort();
+  }
+  created = true;
+  if (SDL_InitSubSystem(SDL_INIT_TIMER)) {
+    Logger::error("SDL_InitSubSystem(SDL_INIT_TIMER) failed: %s", SDL_GetError());
+    abort();
+  }
+  prevCounter = 0;
+  counter = SDL_GetPerformanceCounter();
+}
+
+FW::Clock::~Clock() {
+  SDL_QuitSubSystem(SDL_INIT_TIMER);
+  created = false;
 }
 
 void FW::Clock::update() {

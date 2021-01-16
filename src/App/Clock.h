@@ -9,14 +9,15 @@ namespace FW {
     using Counter = Uint64;
 
     Clock();
+    ~Clock();
 
     double dt() const;
-
     double time() const;
-
     void update();
 
   private:
+    static bool created;
+
     double counterToMS(Counter) const;
 
     Counter prevCounter;
