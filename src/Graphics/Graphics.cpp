@@ -45,3 +45,8 @@ FW::Graphics::~Graphics() {
   SDL_DestroyWindow(window);
   SDL_Quit();
 }
+
+void FW::Graphics::prepareDraw() const {
+  glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
+}

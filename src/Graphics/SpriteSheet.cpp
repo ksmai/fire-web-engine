@@ -1,12 +1,13 @@
+#include "File/ImageFile.h"
 #include "Graphics/SpriteSheet.h"
 
 FW::SpriteSheet::SpriteSheet(
-  Texture&& texture,
+  Data&& data,
   unsigned int spriteWidth,
   unsigned int spriteHeight,
   unsigned int margin
 ):
-  texture{std::move(texture)},
+  texture{ImageFile{std::move(data)}},
   spriteWidth{spriteWidth},
   spriteHeight{spriteHeight},
   margin{margin}
@@ -19,6 +20,10 @@ void FW::SpriteSheet::prepareDraw(int unit) const {
 
 void FW::SpriteSheet::finishDraw(int unit) const {
   texture.unbind(unit);
+}
+
+FW::Sprite FW::SpriteSheet::makeSprite(const SpritePosition& spritePosition) const {
+  return Sprite{getSpriteShaderInfo(spritePosition)};
 }
 
 const FW::SpriteShaderInfo FW::SpriteSheet::getSpriteShaderInfo(const SpritePosition& spritePosition) const {

@@ -7,6 +7,7 @@ namespace FW {
   class Transform {
   public:
     Transform();
+    Transform(Transform&&) =default;
 
     void translate(float, float);
     void scale(float, float);

@@ -28,14 +28,13 @@ void FW::SpriteShader::prepareDraw() const {
   glUniform1i(uTexture, U_TEXTURE);
 }
 
-void FW::SpriteShader::draw(const SpriteSheet& spriteSheet, const SpritePosition& spritePosition, const Transform& transform) const {
+void FW::SpriteShader::draw(const Sprite& sprite) const {
   // assumes spriteSheet.prepareDraw has been called before
-  const SpriteShaderInfo spriteShaderInfo = spriteSheet.getSpriteShaderInfo(spritePosition);
-  glUniform1f(uSpriteShaderInfoX, spriteShaderInfo.x);
-  glUniform1f(uSpriteShaderInfoY, spriteShaderInfo.y);
-  glUniform1f(uSpriteShaderInfoW, spriteShaderInfo.w);
-  glUniform1f(uSpriteShaderInfoH, spriteShaderInfo.h);
-  glUniformMatrix4fv(uModelTransform, 1, GL_FALSE, transform.getMatrix());
+  glUniform1f(uSpriteShaderInfoX, sprite.spriteShaderInfo.x);
+  glUniform1f(uSpriteShaderInfoY, sprite.spriteShaderInfo.y);
+  glUniform1f(uSpriteShaderInfoW, sprite.spriteShaderInfo.w);
+  glUniform1f(uSpriteShaderInfoH, sprite.spriteShaderInfo.h);
+  glUniformMatrix4fv(uModelTransform, 1, GL_FALSE, sprite.transform.getMatrix());
   vao.draw();
   // assumes spriteSheet.finishDraw will be called later for proper batching
 }

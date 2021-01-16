@@ -13,6 +13,8 @@ namespace FW {
     Graphics& operator=(const Graphics&) =delete;
     ~Graphics();
 
+    void prepareDraw() const;
+
   private:
     SDL_Window* window;
     SDL_GLContext context;

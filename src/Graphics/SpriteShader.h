@@ -4,9 +4,7 @@
 #include "GLES3/gl3.h"
 #include "Graphics/SpriteVertexArray.h"
 #include "Graphics/Program.h"
-#include "Graphics/SpriteSheet.h"
-#include "Graphics/SpritePosition.h"
-#include "Graphics/Transform.h"
+#include "Graphics/Sprite.h"
 
 namespace FW {
   class SpriteShader {
@@ -17,7 +15,7 @@ namespace FW {
     ~SpriteShader() =default;
 
     void prepareDraw() const;
-    void draw(const SpriteSheet&, const SpritePosition&, const Transform&) const;
+    void draw(const Sprite&) const;
     void finishDraw() const;
 
   private:

@@ -10,9 +10,8 @@
 #include "File/RemoteFile.h"
 #include "Process/DelayProcess.h"
 #include "Graphics/SpriteShader.h"
-#include "Graphics/Texture.h"
 #include "Graphics/SpriteSheet.h"
-#include "Graphics/SpritePosition.h"
+#include "Graphics/Sprite.h"
 #include <memory>
 
 namespace FW {
@@ -46,7 +45,7 @@ namespace FW {
 
     // for temp testing
     std::unique_ptr<SpriteSheet> spriteSheet;
-    std::unique_ptr<SpritePosition> spritePosition;
+    std::unique_ptr<Sprite> sprite;
     std::unique_ptr<SpriteShader> spriteShader;
   };
 }

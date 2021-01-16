@@ -1,8 +1,6 @@
-#include "SDL_image.h"
 #include "App/App.h"
 
 // for temp testing
-#include <cmath>
 #include "App/Logger.h"
 #include "App/abort.h"
 #include "File/ZipFile.h"
@@ -33,10 +31,10 @@ void FW::App::init() {
   // texture
   ZipFile zipFile{remoteFile.getData()};
   remoteFile.close();
-  ImageFile imageFile{zipFile.getFileContent("demo/roguelikeSheet_transparent.png")};
-  spriteSheet.reset(new SpriteSheet{Texture{imageFile}, 16, 16, 1});
-  spritePosition.reset(new SpritePosition{13, 7, 3, 2});
   spriteShader.reset(new SpriteShader{});
+  spriteSheet.reset(new SpriteSheet{zipFile.getFileContent("demo/roguelikeSheet_transparent.png"), 16, 16, 1});
+  SpritePosition pos{13, 10, 6, 2};
+  sprite.reset(new Sprite{spriteSheet->makeSprite(pos)});
 
   Process::StrongPtr parentProcess{new DelayProcess{3000.0}};
   Process::StrongPtr childProcess{new DelayProcess{2000.0}};
@@ -63,16 +61,10 @@ void FW::App::update() {
   processManager.update(dt);
 
   // for temp testing
-  glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT);
-
-  Transform t;
-  t.translate(-0.2f, -0.2f);
-  t.scale(0.5f, 0.5f);
-  t.rotate(3.141592654f*1.0f);
+  graphics.prepareDraw();
   spriteShader->prepareDraw();
   spriteSheet->prepareDraw();
-  spriteShader->draw(*spriteSheet, *spritePosition, t);
+  spriteShader->draw(*sprite);
   spriteSheet->finishDraw();
   spriteShader->finishDraw();
 }
