@@ -8,10 +8,10 @@ const GLint FW::SpriteShader::U_TEXTURE = 0;
 FW::SpriteShader::SpriteShader():
   vao{0, 1},
   program{
-    __src_Graphics_Shaders_SpriteVertex_glsl,
-    __src_Graphics_Shaders_SpriteVertex_glsl_len,
-    __src_Graphics_Shaders_SpriteFragment_glsl,
-    __src_Graphics_Shaders_SpriteFragment_glsl_len
+    ___src_Graphics_Shaders_SpriteVertex_glsl,
+    ___src_Graphics_Shaders_SpriteVertex_glsl_len,
+    ___src_Graphics_Shaders_SpriteFragment_glsl,
+    ___src_Graphics_Shaders_SpriteFragment_glsl_len
   }
 {
   uModelTransform = glGetUniformLocation(program.get(), "uModelTransform");
