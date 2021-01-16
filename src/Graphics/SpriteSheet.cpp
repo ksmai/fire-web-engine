@@ -21,18 +21,18 @@ void FW::SpriteSheet::finishDraw(int unit) const {
   texture.unbind(unit);
 }
 
-const FW::SpriteInfo FW::SpriteSheet::getSpriteInfo(const Sprite& sprite) const {
+const FW::SpriteShaderInfo FW::SpriteSheet::getSpriteShaderInfo(const SpritePosition& spritePosition) const {
   // x, y represents the offest in terms of number of sprites from the top-left
   // corner of the spritesheet
   // we need to translate them to [0, 1] texture coordinates with origin at
   // bottom right
-  SpriteInfo result;
+  SpriteShaderInfo result;
   float textureWidth = static_cast<float>(texture.getWidth());
   float textureHeight = static_cast<float>(texture.getHeight());
-  float totalHeight = static_cast<float>((spriteHeight + margin) * (sprite.spanY - 1) + spriteHeight);
-  result.x = static_cast<float>(sprite.x * (spriteWidth + margin)) / textureWidth;
-  result.y = 1.0f - static_cast<float>(sprite.y * (spriteHeight + margin) + totalHeight) / textureHeight;
-  result.w = static_cast<float>((spriteWidth + margin) * (sprite.spanX - 1) + spriteWidth) / textureWidth;
+  float totalHeight = static_cast<float>((spriteHeight + margin) * (spritePosition.spanY - 1) + spriteHeight);
+  result.x = static_cast<float>(spritePosition.x * (spriteWidth + margin)) / textureWidth;
+  result.y = 1.0f - static_cast<float>(spritePosition.y * (spriteHeight + margin) + totalHeight) / textureHeight;
+  result.w = static_cast<float>((spriteWidth + margin) * (spritePosition.spanX - 1) + spriteWidth) / textureWidth;
   result.h = totalHeight / textureHeight;
   return result;
 }

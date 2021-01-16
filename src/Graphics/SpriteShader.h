@@ -5,7 +5,7 @@
 #include "Graphics/SpriteVertexArray.h"
 #include "Graphics/Program.h"
 #include "Graphics/SpriteSheet.h"
-#include "Graphics/Sprite.h"
+#include "Graphics/SpritePosition.h"
 #include "Graphics/Transform.h"
 
 namespace FW {
@@ -17,7 +17,7 @@ namespace FW {
     ~SpriteShader() =default;
 
     void prepareDraw() const;
-    void draw(const SpriteSheet&, const Sprite&, const Transform&) const;
+    void draw(const SpriteSheet&, const SpritePosition&, const Transform&) const;
     void finishDraw() const;
 
   private:
@@ -25,10 +25,10 @@ namespace FW {
     Program program;
     GLuint uModelTransform;
     GLuint uTexture;
-    GLuint uSpriteInfoX;
-    GLuint uSpriteInfoY;
-    GLuint uSpriteInfoW;
-    GLuint uSpriteInfoH;
+    GLuint uSpriteShaderInfoX;
+    GLuint uSpriteShaderInfoY;
+    GLuint uSpriteShaderInfoW;
+    GLuint uSpriteShaderInfoH;
 
     static const GLint U_TEXTURE;
   };

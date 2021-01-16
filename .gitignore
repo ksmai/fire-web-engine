@@ -36,3 +36,6 @@ dist/
 
 # npm
 node_modules/
+
+# preprocessed GLSL shaders
+src/Graphics/Shaders/*.h

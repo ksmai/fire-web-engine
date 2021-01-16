@@ -73,7 +73,7 @@ void FW::App::init() {
   remoteFile.close();
   ImageFile imageFile{zipFile.getFileContent("demo/roguelikeSheet_transparent.png")};
   spriteSheet.reset(new SpriteSheet{Texture{imageFile}, 16, 16, 1});
-  sprite.reset(new Sprite{13, 7, 3, 2});
+  spritePosition.reset(new SpritePosition{13, 7, 3, 2});
   spriteShader.reset(new SpriteShader{});
 
   Process::StrongPtr parentProcess{new DelayProcess{3000.0}};
@@ -110,7 +110,7 @@ void FW::App::update() {
   t.rotate(3.141592654f*1.0f);
   spriteShader->prepareDraw();
   spriteSheet->prepareDraw();
-  spriteShader->draw(*spriteSheet, *sprite, t);
+  spriteShader->draw(*spriteSheet, *spritePosition, t);
   spriteSheet->finishDraw();
   spriteShader->finishDraw();
 }

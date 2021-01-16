@@ -3,8 +3,8 @@
 
 #include "memory"
 #include "Graphics/Texture.h"
-#include "Graphics/Sprite.h"
-#include "Graphics/SpriteInfo.h"
+#include "Graphics/SpritePosition.h"
+#include "Graphics/SpriteShaderInfo.h"
 
 namespace FW {
   class SpriteSheet {
@@ -12,7 +12,7 @@ namespace FW {
     SpriteSheet(Texture&& texture, unsigned int spriteWidth, unsigned int spriteHeight, unsigned int margin = 0);
 
     void prepareDraw(int unit = 0) const;
-    const SpriteInfo getSpriteInfo(const Sprite&) const;
+    const SpriteShaderInfo getSpriteShaderInfo(const SpritePosition&) const;
     void finishDraw(int unit = 0) const;
 
   private:

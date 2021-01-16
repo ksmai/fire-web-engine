@@ -1,8 +1,8 @@
-#ifndef __SPRITE_H__
-#define __SPRITE_H__
+#ifndef __SPRITE_POSITION_H__
+#define __SPRITE_POSITION_H__
 
 namespace FW {
-  struct Sprite {
+  struct SpritePosition {
     unsigned int x;
     unsigned int y;
     unsigned int spanX{1};

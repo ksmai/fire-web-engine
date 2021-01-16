@@ -1,5 +1,5 @@
 #include "Graphics/SpriteShader.h"
-#include "Graphics/SpriteInfo.h"
+#include "Graphics/SpriteShaderInfo.h"
 #include "Graphics/Shaders/SpriteVertex.h"
 #include "Graphics/Shaders/SpriteFragment.h"
 
@@ -16,10 +16,10 @@ FW::SpriteShader::SpriteShader():
 {
   uModelTransform = glGetUniformLocation(program.get(), "uModelTransform");
   uTexture = glGetUniformLocation(program.get(), "uTexture");
-  uSpriteInfoX = glGetUniformLocation(program.get(), "uSpriteInfo.x");
-  uSpriteInfoY = glGetUniformLocation(program.get(), "uSpriteInfo.y");
-  uSpriteInfoW = glGetUniformLocation(program.get(), "uSpriteInfo.w");
-  uSpriteInfoH = glGetUniformLocation(program.get(), "uSpriteInfo.h");
+  uSpriteShaderInfoX = glGetUniformLocation(program.get(), "uSpriteShaderInfo.x");
+  uSpriteShaderInfoY = glGetUniformLocation(program.get(), "uSpriteShaderInfo.y");
+  uSpriteShaderInfoW = glGetUniformLocation(program.get(), "uSpriteShaderInfo.w");
+  uSpriteShaderInfoH = glGetUniformLocation(program.get(), "uSpriteShaderInfo.h");
 }
 
 void FW::SpriteShader::prepareDraw() const {
@@ -28,13 +28,13 @@ void FW::SpriteShader::prepareDraw() const {
   glUniform1i(uTexture, U_TEXTURE);
 }
 
-void FW::SpriteShader::draw(const SpriteSheet& spriteSheet, const Sprite& sprite, const Transform& transform) const {
+void FW::SpriteShader::draw(const SpriteSheet& spriteSheet, const SpritePosition& spritePosition, const Transform& transform) const {
   // assumes spriteSheet.prepareDraw has been called before
-  const SpriteInfo spriteInfo = spriteSheet.getSpriteInfo(sprite);
-  glUniform1f(uSpriteInfoX, spriteInfo.x);
-  glUniform1f(uSpriteInfoY, spriteInfo.y);
-  glUniform1f(uSpriteInfoW, spriteInfo.w);
-  glUniform1f(uSpriteInfoH, spriteInfo.h);
+  const SpriteShaderInfo spriteShaderInfo = spriteSheet.getSpriteShaderInfo(spritePosition);
+  glUniform1f(uSpriteShaderInfoX, spriteShaderInfo.x);
+  glUniform1f(uSpriteShaderInfoY, spriteShaderInfo.y);
+  glUniform1f(uSpriteShaderInfoW, spriteShaderInfo.w);
+  glUniform1f(uSpriteShaderInfoH, spriteShaderInfo.h);
   glUniformMatrix4fv(uModelTransform, 1, GL_FALSE, transform.getMatrix());
   vao.draw();
   // assumes spriteSheet.finishDraw will be called later for proper batching
