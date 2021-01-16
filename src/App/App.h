@@ -3,7 +3,7 @@
 
 #include <string>
 #include <SDL/SDL.h>
-#include "Resource/ResourceCache.h"
+#include "File/RemoteFile.h"
 #include "Process/ProcessManager.h"
 #include "App/Clock.h"
 
@@ -42,8 +42,7 @@ namespace FW {
     SDL_Window* window;
     SDL_GLContext context;
 
-    // ResourceCache should come first so any resources it owned are destroyed last
-    ResourceCache resourceCache;
+    RemoteFile remoteFile{"/resources.zip"};
     Clock clock;
     ProcessManager processManager;
     bool initialized{false};
@@ -51,7 +50,7 @@ namespace FW {
     // for temp testing
     std::unique_ptr<SpriteSheet> spriteSheet;
     std::unique_ptr<Sprite> sprite;
-    std::unique_ptr<SpriteShader> program;
+    std::unique_ptr<SpriteShader> spriteShader;
   };
 }
 

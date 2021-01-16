@@ -1,13 +1,9 @@
 #include "Graphics/Texture.h"
 
-FW::Texture::Texture(const Resource& resource):
-  Texture{dynamic_cast<const ImageResource&>(resource)}
-{
-}
-
-FW::Texture::Texture(const ImageResource& img):
-  width{img.width()},
-  height{img.height()}
+FW::Texture::Texture(const ImageFile& imageFile):
+  texture{0},
+  width{imageFile.getWidth()},
+  height{imageFile.getHeight()}
 {
   glGenTextures(1, &texture);
   bind();
@@ -16,15 +12,12 @@ FW::Texture::Texture(const ImageResource& img):
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   GLint format = GL_RGB;
-  if (img.colors() == 4) {
+  if (imageFile.hasAlpha()) {
     format = GL_RGBA;
-  } else if (img.colors() == 3) {
-    format = GL_RGB;
   } else {
-    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "unknown pixel format");
-    throw "unknown pixel format";
+    format = GL_RGB;
   }
-  glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, img.buffer());
+  glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, imageFile.getTempBuffer());
   unbind();
 }
 

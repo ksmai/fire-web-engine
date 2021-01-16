@@ -5,6 +5,7 @@
 
 namespace FW {
   using Data = std::vector<unsigned char>;
+  using Buffer = unsigned char*;
 }
 
 #endif

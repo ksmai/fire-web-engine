@@ -1,35 +1,29 @@
 #ifndef __SHADER_H__
 #define __SHADER_H__
 
-#include <GLES3/gl3.h>
+#include "GLES3/gl3.h"
 
 namespace FW {
   class Shader {
   public:
-    using Type = GLuint;
     using Source = const unsigned char*;
-    using Ref = GLuint;
+    using Length = const unsigned int;
 
-    friend class SpriteShader;
+    friend class Program;
 
     Shader(const Shader&) =delete;
-
-    Shader(Shader&&);
-
     Shader& operator=(const Shader&) =delete;
-
     ~Shader();
 
-    static Shader createVertexShader(Source);
-
-    static Shader createFragmentShader(Source);
+    static Shader createVertexShader(Source, Length);
+    static Shader createFragmentShader(Source, Length);
 
   private:
-    Shader(Type, Source);
+    Shader(GLuint type, Source, Length);
 
-    void compile(Source source) const;
+    void compile(Source source, Length) const;
 
-    Ref get() const;
+    GLuint get() const;
 
     GLuint shader;
   };

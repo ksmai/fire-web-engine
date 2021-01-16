@@ -65,5 +65,6 @@ FW::Data FW::RemoteFile::getData() const {
 void FW::RemoteFile::close() {
   if (result) {
     emscripten_fetch_close(result);
+    result = nullptr;
   }
 }

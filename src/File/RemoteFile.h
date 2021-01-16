@@ -18,10 +18,9 @@ namespace FW {
     Data getData() const;
     bool isError() const;
     const std::string getError() const;
-
-  private:
     void close();
 
+  private:
     static void onSuccess(emscripten_fetch_t*);
     static void onError(emscripten_fetch_t*);
 

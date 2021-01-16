@@ -1,19 +1,17 @@
 #include "SDL_image.h"
 #include "App/App.h"
-#include "Resource/TextLoader.h"
-#include "Resource/RawLoader.h"
-#include "Resource/ImageLoader.h"
 
 // for temp testing
 #include <cmath>
-#include "Graphics/Shader.h"
+#include "App/Logger.h"
+#include "App/abort.h"
+#include "File/ZipFile.h"
+#include "File/ImageFile.h"
 #include "Graphics/Transform.h"
 #include "Actor/ActorID.h"
 
 FW::App::App(const Config& config) {
-  resourceCache.addLoader(new TextLoader{});
-  resourceCache.addLoader(new ImageLoader{});
-  resourceCache.addLoader(new RawLoader{});
+  remoteFile.open();
 
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER)) {
     SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s", SDL_GetError());
@@ -58,22 +56,25 @@ FW::App::~App() {
 }
 
 void FW::App::init() {
-  if (initialized || resourceCache.isLoading()) {
+  if (initialized) {
     return;
   }
-  resourceCache.update();
+  if (remoteFile.isError()) {
+    Logger::error(remoteFile.getError().c_str());
+    abort();
+  }
+  if (!remoteFile.isOpened()) {
+    return;
+  }
 
   // for temp testing
   // texture
-  Resource* img = resourceCache.getResource("demo/roguelikeSheet_transparent.png");
-  spriteSheet.reset(new SpriteSheet{Texture{*img}, 16, 16, 1});
+  ZipFile zipFile{remoteFile.getData()};
+  remoteFile.close();
+  ImageFile imageFile{zipFile.getFileContent("demo/roguelikeSheet_transparent.png")};
+  spriteSheet.reset(new SpriteSheet{Texture{imageFile}, 16, 16, 1});
   sprite.reset(new Sprite{13, 7, 3, 2});
-
-  const unsigned char* vertexShaderSource = resourceCache.getResource("demo/SpriteVertex.glsl")->buffer();
-  const unsigned char* fragmentShaderSource = resourceCache.getResource("demo/SpriteFragment.glsl")->buffer();
-  Shader vertexShader{Shader::createVertexShader(vertexShaderSource)};
-  Shader fragmentShader{Shader::createFragmentShader(fragmentShaderSource)};
-  program.reset(new SpriteShader{vertexShader, fragmentShader});
+  spriteShader.reset(new SpriteShader{});
 
   Process::StrongPtr parentProcess{new DelayProcess{3000.0}};
   Process::StrongPtr childProcess{new DelayProcess{2000.0}};
@@ -107,9 +108,9 @@ void FW::App::update() {
   t.translate(-0.2f, -0.2f);
   t.scale(0.5f, 0.5f);
   t.rotate(3.141592654f*1.0f);
-  program->prepareDraw();
+  spriteShader->prepareDraw();
   spriteSheet->prepareDraw();
-  program->draw(*spriteSheet, *sprite, t);
+  spriteShader->draw(*spriteSheet, *sprite, t);
   spriteSheet->finishDraw();
-  program->finishDraw();
+  spriteShader->finishDraw();
 }

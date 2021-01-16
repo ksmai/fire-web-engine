@@ -32,12 +32,9 @@ FW::ZipFile::Size FW::ZipFile::findEndOfCentralDirectorySignature() const {
 
 void FW::ZipFile::readCentralDirectoryHeaders() {
   Size offset = startOfCentralDirectory;
-  Logger::info("startOfCentralDirectoryHeader: %d", offset);
-  Logger::info("numFiles: %d", getNumFiles());
   files.resize(getNumFiles());
   for (Index i = 0; i < getNumFiles(); ++i) {
     offset += readCentralDirectoryHeader(i, offset);
-    Logger::info("offset updated: %d", offset);
   }
 }
 
@@ -67,6 +64,7 @@ FW::ZipFile::Size FW::ZipFile::readCentralDirectoryHeader(Index i, Size offset) 
   files[i].uncompressedSize = parseUint32LE(data, offset + 24);
   files[i].name = std::string{&data[0]+offset+46, &data[0]+offset+46+nameLength};
   files[i].compressed = compressionMethod != 0;
+  fileIndexes[files[i].name] = i;
 
   uint32_t localFileHeader{parseUint32LE(data, offset + 42)};
   if (localFileHeader + 30 > data.size()) {
@@ -88,7 +86,7 @@ FW::ZipFile::Index FW::ZipFile::getNumFiles() const {
   return numFiles;
 }
 
-FW::ZipFile::FileName FW::ZipFile::getFileName(Index i) const {
+const FW::ZipFile::FileName FW::ZipFile::getFileName(Index i) const {
   return files[i].name;
 }
 
@@ -165,6 +163,15 @@ FW::Data FW::ZipFile::getFileContent(Index i) const {
 
   (void)inflateEnd(&strm);
   return result;
+}
+
+FW::Data FW::ZipFile::getFileContent(const FileName& fileName) const {
+  auto it{fileIndexes.find(fileName)};
+  if (it == fileIndexes.end()) {
+    Logger::error("File not found in the zip file: %s", fileName.c_str());
+    abort();
+  }
+  return getFileContent(it->second);
 }
 
 uint32_t FW::parseUint32LE(const Data& data, ZipFile::Size offset) {

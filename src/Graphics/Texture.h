@@ -2,16 +2,15 @@
 #define __TEXTURE_H__
 
 #include "GLES3/gl3.h"
-#include "Resource/ImageResource.h"
+#include "File/ImageFile.h"
 
 namespace FW {
   class Texture {
   public:
-    Texture(const Resource&);
-    Texture(const ImageResource&);
+    Texture(const ImageFile&);
     Texture(const Texture&) =delete;
+    Texture& operator=(const Texture&) =delete;
     Texture(Texture&&);
-    Texture& operator=(const Texture&) = delete;
     ~Texture();
 
     void bind(int unit = 0) const;
