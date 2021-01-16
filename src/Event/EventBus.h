@@ -1,6 +1,8 @@
 #ifndef __EVENT_BUS__
 #define __EVENT_BUS__
 
+#include <algorithm>
+#include <iterator>
 #include <vector>
 #include <functional>
 #include "Event/Event.h"
@@ -11,11 +13,29 @@ namespace FW {
     template <typename T>
     using EventListener = std::function<void(const T&)>;
 
+    using EventListenerID = std::size_t;
+
     template <typename Payload>
-    void subscribe(EventListener<Payload> listener) {
+    EventListenerID subscribe(EventListener<Payload> listener) {
       EventType type = Event<Payload>::type();
       ensureSize(type);
       listeners[type].push_back(EventListenerAdapter{listener});
+      EventListenerID id{getNextEventListenerID()};
+      listenerIDs[type].push_back(id);
+      return id;
+    }
+
+    template <typename Payload>
+    void unsubscribe(EventListenerID id) {
+      EventType type = Event<Payload>::type();
+      ensureSize(type);
+      auto it{std::find(listenerIDs[type].begin(), listenerIDs[type].end(), id)};
+      if (it == listenerIDs[type].end()) {
+        return;
+      }
+      auto index{std::distance(listenerIDs[type].begin(), it)};
+      listeners[type].erase(listeners[type].begin() + index);
+      listenerIDs[type].erase(it);
     }
 
     template <typename Payload>
@@ -33,7 +53,12 @@ namespace FW {
     void ensureSize(std::size_t size) {
       if (size >= listeners.size()) {
         listeners.resize(size + 1);
+        listenerIDs.resize(size + 1);
       }
+    }
+
+    EventListenerID getNextEventListenerID() {
+      return nextID++;
     }
 
     template <typename Payload>
@@ -51,6 +76,8 @@ namespace FW {
     };
 
     std::vector<std::vector<EventListener<BaseEvent>>> listeners;
+    std::vector<std::vector<EventListenerID>> listenerIDs;
+    EventListenerID nextID{0};
   };
 }
 

@@ -81,14 +81,18 @@ void FW::App::init() {
   eventBus.subscribe<MyData2>(std::bind(&MyListenerObject::myListenMethod, &obj, std::placeholders::_1));
   eventBus.emit<MyData2>({"NotCalled"});
   eventBus.emit<MyData1>({1, 2});
-  eventBus.subscribe<MyData1>(myListener1);
+  auto id1 = eventBus.subscribe<MyData1>(myListener1);
   eventBus.emit<MyData2>({"NotCalled2"});
   eventBus.emit<MyData1>({3, 4});
   eventBus.subscribe<MyData2>(myListener2);
   eventBus.emit<MyData2>({"Called!!"});
   eventBus.emit<MyData1>({5, 6});
-  eventBus.subscribe<MyData1>(myListener3);
+  auto id2 = eventBus.subscribe<MyData1>(myListener3);
   eventBus.emit<MyData2>({"Called Again!!"});
+  eventBus.unsubscribe<MyData1>(id1);
+  eventBus.unsubscribe<MyData1>(id2);
+  eventBus.unsubscribe<MyData1>(id2);
+  eventBus.unsubscribe<MyData2>(id2);
   eventBus.emit<MyData1>({7, 8});
 
   initialized = true;
