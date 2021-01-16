@@ -31,9 +31,8 @@ void FW::App::init() {
   // texture
   ZipFile zipFile{remoteFile.getData()};
   remoteFile.close();
-  spriteShader.reset(new SpriteShader{});
   spriteSheet.reset(new SpriteSheet{zipFile.getFileContent("demo/roguelikeSheet_transparent.png"), 16, 16, 1});
-  SpritePosition pos{13, 10, 6, 2};
+  SpritePosition pos{13, 12, 4, 4};
   sprite.reset(new Sprite{spriteSheet->makeSprite(pos)});
 
   Process::StrongPtr parentProcess{new DelayProcess{3000.0}};
@@ -62,9 +61,9 @@ void FW::App::update() {
 
   // for temp testing
   graphics.prepareDraw();
-  spriteShader->prepareDraw();
+  graphics.prepareDrawSprite();
   spriteSheet->prepareDraw();
-  spriteShader->draw(*sprite);
+  graphics.drawSprite(*sprite);
   spriteSheet->finishDraw();
-  spriteShader->finishDraw();
+  graphics.finishDrawSprite();
 }

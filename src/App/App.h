@@ -9,7 +9,6 @@
 #include "Process/ProcessManager.h"
 #include "File/RemoteFile.h"
 #include "Process/DelayProcess.h"
-#include "Graphics/SpriteShader.h"
 #include "Graphics/SpriteSheet.h"
 #include "Graphics/Sprite.h"
 #include <memory>
@@ -46,7 +45,6 @@ namespace FW {
     // for temp testing
     std::unique_ptr<SpriteSheet> spriteSheet;
     std::unique_ptr<Sprite> sprite;
-    std::unique_ptr<SpriteShader> spriteShader;
   };
 }
 

@@ -38,6 +38,8 @@ FW::Graphics::Graphics(const std::string& title, std::size_t canvasWidth, std::s
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);
+
+  spriteShader.reset(new SpriteShader{});
 }
 
 FW::Graphics::~Graphics() {
@@ -49,4 +51,16 @@ FW::Graphics::~Graphics() {
 void FW::Graphics::prepareDraw() const {
   glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void FW::Graphics::prepareDrawSprite() const {
+  spriteShader->prepareDraw();
+}
+
+void FW::Graphics::drawSprite(const Sprite& sprite) const {
+  spriteShader->draw(sprite);
+}
+
+void FW::Graphics::finishDrawSprite() const {
+  spriteShader->finishDraw();
 }
