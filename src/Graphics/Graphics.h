@@ -8,6 +8,7 @@
 #include "Graphics/Color.h"
 #include "Graphics/Sprite.h"
 #include "Graphics/SpriteShader.h"
+#include "Graphics/SpriteSheet.h"
 
 namespace FW {
   class Graphics {
@@ -21,6 +22,7 @@ namespace FW {
 
     void prepareDraw() const;
 
+    SpriteSheet makeSpriteSheet(Data&&, unsigned int spriteWidth, unsigned int spriteHeight, unsigned int margin = 0) const;
     void prepareDrawSprite() const;
     void drawSprite(const Sprite&) const;
     void finishDrawSprite() const;

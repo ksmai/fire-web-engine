@@ -10,8 +10,6 @@
 #include "Process/ProcessRunner.h"
 #include "File/RemoteFile.h"
 #include "Process/DelayProcess.h"
-#include "Graphics/SpriteSheet.h"
-#include "Graphics/Sprite.h"
 #include <memory>
 
 namespace FW {

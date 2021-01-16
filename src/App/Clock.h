@@ -9,6 +9,8 @@ namespace FW {
     using Counter = Uint64;
 
     Clock();
+    Clock(const Clock&) =delete;
+    Clock& operator=(const Clock&) =delete;
     ~Clock();
 
     double dt() const;

@@ -66,6 +66,10 @@ void FW::Graphics::prepareDraw() const {
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
+FW::SpriteSheet FW::Graphics::makeSpriteSheet(Data&& data, unsigned int spriteWidth, unsigned int spriteHeight, unsigned int margin) const {
+  return SpriteSheet{std::move(data), spriteWidth, spriteHeight, margin};
+}
+
 void FW::Graphics::prepareDrawSprite() const {
   spriteShader->prepareDraw();
 }
