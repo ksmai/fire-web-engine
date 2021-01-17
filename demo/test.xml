@@ -1,0 +1,11 @@
+<!DOCTYPE xml>
+<!-- my comment -->
+<Scene id="123" test-attrib="my secret here">
+  <!-- my comment2 -->
+  <Character name="John Doe" hp="100">
+    <Weapon type="sword" weight="42" name="HelloSword" />
+    This is a text node;
+  </Character>
+  <Shop />
+  <Character name="Jane Doe" hp="20"></Character>
+</Scene>
