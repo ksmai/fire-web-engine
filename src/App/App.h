@@ -5,6 +5,7 @@
 #include "App/Clock.h"
 #include "Graphics/Graphics.h"
 #include "Input/KeyboardInput.h"
+#include "Input/MouseInput.h"
 
 // for temp testing
 #include "Event/EventBus.h"
@@ -37,6 +38,7 @@ namespace FW {
 
     Graphics graphics;
     KeyboardInput keyboardInput;
+    MouseInput mouseInput;
     EventBus eventBus;
     RemoteFile remoteFile;
     Clock clock;

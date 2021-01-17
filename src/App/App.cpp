@@ -123,6 +123,7 @@ void FW::App::update() {
   double dt = clock.dt();
 
   keyboardInput.update();
+  mouseInput.update();
   processRunner.update(dt);
 
   if (keyboardInput.isClicked(KeyboardInput::Key::SPACE)) {
@@ -130,6 +131,10 @@ void FW::App::update() {
   }
   if (keyboardInput.isReleased(KeyboardInput::Key::SPACE)) {
     std::cout << "Space is released\n";
+  }
+  
+  if (mouseInput.isClicked()) {
+    std::cout << "Clicked : (" << mouseInput.getX() << ", " << mouseInput.getY() << ")\n";
   }
 
   // for temp testing
