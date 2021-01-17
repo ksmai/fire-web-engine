@@ -4,6 +4,7 @@
 #include <string>
 #include "App/Clock.h"
 #include "Graphics/Graphics.h"
+#include "Input/KeyboardInput.h"
 
 // for temp testing
 #include "Event/EventBus.h"
@@ -35,6 +36,7 @@ namespace FW {
     static bool created;
 
     Graphics graphics;
+    KeyboardInput keyboardInput;
     EventBus eventBus;
     RemoteFile remoteFile;
     Clock clock;

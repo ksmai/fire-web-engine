@@ -122,7 +122,15 @@ void FW::App::update() {
   clock.update();
   double dt = clock.dt();
 
+  keyboardInput.update();
   processRunner.update(dt);
+
+  if (keyboardInput.isClicked(KeyboardInput::Key::SPACE)) {
+    std::cout << "Space is clicked\n";
+  }
+  if (keyboardInput.isReleased(KeyboardInput::Key::SPACE)) {
+    std::cout << "Space is released\n";
+  }
 
   // for temp testing
   graphics.prepareDraw();
