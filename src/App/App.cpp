@@ -94,6 +94,11 @@ void FW::App::init() {
   const char* attr = xmlFile.root().find("Character")[0].find("Weapon")[0].attr("non"); 
   std::cout << (attr ? attr : "CANNOT FIND") << "\n";
 
+  // test audio
+  sound.reset(new Sound{audio.loadSound(zipFile.getFileContent("coin.wav"))});
+  music.reset(new Music{audio.loadMusic(zipFile.getFileContent("music.ogg"))});
+  // audio.playMusic(*music);
+
   Process::StrongPtr parentProcess{new DelayProcess{3000.0}};
   Process::StrongPtr childProcess{new DelayProcess{2000.0}};
   parentProcess->attachChild(std::move(childProcess));
@@ -137,15 +142,18 @@ void FW::App::update() {
   mouseInput.update();
   processRunner.update(dt);
 
-  if (keyboardInput.isClicked(KeyboardInput::Key::SPACE)) {
-    std::cout << "Space is clicked\n";
+  if (keyboardInput.isClicked(KeyboardInput::Key::P)) {
+    std::cout << "P is clicked. music stopped\n";
+    audio.stopMusic();
   }
-  if (keyboardInput.isReleased(KeyboardInput::Key::SPACE)) {
-    std::cout << "Space is released\n";
+  if (keyboardInput.isClicked(KeyboardInput::Key::K)) {
+    std::cout << "K is clicked. music played\n";
+    audio.playMusic(*music);
   }
   
   if (mouseInput.isClicked()) {
     std::cout << "Clicked : (" << mouseInput.getX() << ", " << mouseInput.getY() << ")\n";
+    audio.playSound(*sound);
   }
 
   // for temp testing

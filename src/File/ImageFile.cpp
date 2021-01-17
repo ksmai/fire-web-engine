@@ -36,12 +36,12 @@ bool FW::ImageFile::hasAlpha() const {
 void FW::ImageFile::loadImage(Data&& data) {
   SDL_RWops* rw{SDL_RWFromConstMem(&data[0], data.size())};
   if (!rw) {
-    Logger::error("SDL_RWFromConstMem failed: %s",  SDL_GetError());
+    Logger::error("SDL_RWFromConstMem() failed: %s",  SDL_GetError());
     abort();
   }
   surface = IMG_Load_RW(rw, 1);
   if (!surface) {
-    Logger::error("IMG_Load_RW failed: %s", IMG_GetError());
+    Logger::error("IMG_Load_RW() failed: %s", IMG_GetError());
     abort();
   }
   Logger::info("image loaded: width: %d, height: %d", surface->w, surface->h);

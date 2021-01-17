@@ -3,6 +3,7 @@
 
 #include <string>
 #include "App/Clock.h"
+#include "Audio/Audio.h"
 #include "Graphics/Graphics.h"
 #include "Input/KeyboardInput.h"
 #include "Input/MouseInput.h"
@@ -37,6 +38,7 @@ namespace FW {
     static bool created;
 
     Graphics graphics;
+    Audio audio;
     KeyboardInput keyboardInput;
     MouseInput mouseInput;
     EventBus eventBus;
@@ -46,6 +48,8 @@ namespace FW {
     bool initialized{false};
 
     // for temp testing
+    std::unique_ptr<Sound> sound;
+    std::unique_ptr<Music> music;
     std::unique_ptr<SpriteSheet> spriteSheet;
     std::unique_ptr<Sprite> sprite;
   };
