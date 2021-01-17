@@ -5,6 +5,7 @@
 // for temp testing
 #include "File/ZipFile.h"
 #include "File/ImageFile.h"
+#include "File/XMLFile.h"
 #include "Graphics/Color.h"
 #include "Actor/ActorID.h"
 #include <iostream>
@@ -79,9 +80,19 @@ void FW::App::init() {
   graphics.setClearColor(FW::Color{0.7f, 0.42f, 0.66f, 1.0f});
   ZipFile zipFile{remoteFile.getData()};
   remoteFile.close();
-  spriteSheet.reset(new SpriteSheet{graphics.makeSpriteSheet(zipFile.getFileContent("demo/roguelikeSheet_transparent.png"), 16, 16, 1)});
+  spriteSheet.reset(new SpriteSheet{graphics.makeSpriteSheet(zipFile.getFileContent("roguelikeSheet_transparent.png"), 16, 16, 1)});
   SpritePosition pos{13, 12, 4, 4};
   sprite.reset(new Sprite{spriteSheet->makeSprite(pos)});
+
+  // xml
+  XMLFile xmlFile{zipFile.getFileContent("test.xml")};
+  std::cout << "test xmlFile:\n";
+  std::cout << xmlFile.root().find("Character").size() << "\n";
+  std::cout << xmlFile.root().find("Shop").size() << "\n";
+  std::cout << xmlFile.root().find("Enemy").size() << "\n";
+  std::cout << xmlFile.root().find("Character")[0].find("Weapon")[0].attr("name") << "\n"; 
+  const char* attr = xmlFile.root().find("Character")[0].find("Weapon")[0].attr("non"); 
+  std::cout << (attr ? attr : "CANNOT FIND") << "\n";
 
   Process::StrongPtr parentProcess{new DelayProcess{3000.0}};
   Process::StrongPtr childProcess{new DelayProcess{2000.0}};
