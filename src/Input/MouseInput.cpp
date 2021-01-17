@@ -24,6 +24,7 @@ void FW::MouseInput::update() {
   prevLeft = nextLeft;
   prevMiddle = nextMiddle;
   prevRight = nextRight;
+  SDL_PumpEvents();
   Uint32 state = SDL_GetMouseState(&x, &y);
   nextLeft = (state & SDL_BUTTON(SDL_BUTTON_LEFT));
   nextMiddle = (state & SDL_BUTTON(SDL_BUTTON_MIDDLE));
