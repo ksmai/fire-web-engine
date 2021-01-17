@@ -44,6 +44,10 @@ void FW::Audio::stopMusic() const {
   Mix_HaltMusic();
 }
 
+bool FW::Audio::isPlayingMusic() const {
+  return Mix_PlayingMusic();
+}
+
 FW::Sound FW::Audio::loadSound(Data&& data) const {
   return Sound{std::move(data)};
 }

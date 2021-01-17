@@ -17,6 +17,7 @@ namespace FW {
     Music loadMusic(Data&&) const;
     void playMusic(const Music&) const;
     void stopMusic() const;
+    bool isPlayingMusic() const;
 
     Sound loadSound(Data&&) const;
     void playSound(const Sound&) const;

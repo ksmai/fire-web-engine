@@ -147,8 +147,12 @@ void FW::App::update() {
     audio.stopMusic();
   }
   if (keyboardInput.isClicked(KeyboardInput::Key::K)) {
-    std::cout << "K is clicked. music played\n";
-    audio.playMusic(*music);
+    if (audio.isPlayingMusic()) {
+      std::cout << "music is already playing :)\n";
+    } else {
+      std::cout << "K is clicked. music played\n";
+      audio.playMusic(*music);
+    }
   }
   
   if (mouseInput.isClicked()) {
