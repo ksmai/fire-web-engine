@@ -7,6 +7,7 @@
 #include "Graphics/Graphics.h"
 #include "Input/KeyboardInput.h"
 #include "Input/MouseInput.h"
+#include "Script/ScriptManager.h"
 
 // for temp testing
 #include "Event/EventBus.h"
@@ -37,6 +38,7 @@ namespace FW {
   private:
     static bool created;
 
+    ScriptManager scriptManager;
     Graphics graphics;
     Audio audio;
     KeyboardInput keyboardInput;
