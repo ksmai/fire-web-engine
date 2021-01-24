@@ -11,6 +11,7 @@ EXE = $(DIST_DIR)/index.js
 
 CXX = emcc
 CXXFLAGS = \
+	-g \
 	-O0 \
 	-Wall \
 	-Werror \
@@ -18,7 +19,7 @@ CXXFLAGS = \
 	-pedantic-errors \
 	-std=c++17 \
 	-I$(SRC_DIR)/ \
-	-I./lib/
+	-isystem ./lib/
 
 EMCCFLAGS = \
 	-s WASM=1 \
@@ -32,12 +33,14 @@ EMCCFLAGS = \
 	-s MODULARIZE=1 \
 	-s 'EXPORT_NAME="createFireWebEngine"'
 
+LD_FLAGS = -L./lib/ -llua
+
 .PHONY = default clean
 
 default: $(EXE)
 
 $(EXE): $(COMPILED_GLSL_FILES) $(OBJ_FILES)
-	$(CXX) $(CXXFLAGS) -o $@ $(EMCCFLAGS) $(OBJ_FILES)
+	$(CXX) $(CXXFLAGS) -o $@ $(EMCCFLAGS) $(OBJ_FILES) $(LD_FLAGS)
 
 -include $(DEP_FILES)
 

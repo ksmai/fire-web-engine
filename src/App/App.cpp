@@ -10,6 +10,8 @@
 #include "Actor/ActorID.h"
 #include <iostream>
 #include <functional>
+#include "lua-5.4.2/src/lua.hpp"
+#include "LuaBridge/LuaBridge.h"
 
 bool FW::App::created{false};
 
@@ -126,6 +128,18 @@ void FW::App::init() {
   eventBus.unsubscribe<MyData1>(id2);
   eventBus.unsubscribe<MyData2>(id2);
   eventBus.emit<MyData1>({7, 8});
+
+  // test lua
+  lua_State* L{luaL_newstate()};
+  luaL_openlibs(L);
+  int secret{42};
+  luabridge::getGlobalNamespace(L)
+    .beginNamespace("test")
+    .addProperty("secret", &secret)
+    .endNamespace();
+  luaL_dostring(L, "test.secret = test.secret + 1");
+  std::cout << "After running lua, the secret becomes: " << secret << "\n";
+  lua_close(L);
 
   initialized = true;
 }
