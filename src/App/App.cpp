@@ -15,6 +15,8 @@ bool FW::App::created{false};
 
 struct MyData1 {
   int x, y;
+
+  MyData1(int x, int y): x{x}, y{y} {}
 };
 
 struct MyData2 {
@@ -40,6 +42,32 @@ struct MyListenerObject {
 };
 
 MyListenerObject obj;
+
+class TestClassForLua {
+public:
+  explicit TestClassForLua(int secret):
+    secret{secret}
+  {
+    std::cout << "TestClassForLua(" << secret << ") called\n";
+  }
+
+  double someMethod(const char* s, unsigned long long x) {
+    std::cout << "TestClassForLua::someMethod(\"" << s << "\", " << x << "uLL) called\n";
+    return x / 3.0 + secret;
+  }
+
+private:
+  int secret;
+};
+
+void useTestClassForLua(TestClassForLua* ptr) {
+  ptr->someMethod("calling useTestClassForLua", 444444);
+}
+
+void useMyData1FromLua(MyData1* ptr) {
+  std::cout << "Received MyData1 from Lua! " << ptr->x << ", " << ptr->y << "\n";
+  std::swap(ptr->x, ptr->y);
+}
 
 FW::App::App(const Config& config):
   graphics{config.title, config.canvasWidth, config.canvasHeight},
@@ -132,6 +160,25 @@ void FW::App::init() {
   std::cout << "Lua has error? " << luaHasError << "\n";
 
   scriptManager.getFunction("aLuaFunc")("an arg from c++");
+
+  scriptManager.addClassConstructor<TestClassForLua, void(*)(int)>("TestClass");
+  scriptManager.addClassMethod("TestClass", "someMethod", &TestClassForLua::someMethod);
+
+  scriptManager.addFunction("useTestClass", &useTestClassForLua);
+  scriptManager.runLua("local x = FW.TestClass(42)\nFW.debug(x:someMethod('SomeString', 1000))\nFW.useTestClass(x)\n");
+
+  scriptManager.runLua("function luaUseTestClass(x)\nFW.debug(x:someMethod('In luaUseTestClass', 666))\nreturn 33333\nend");
+  TestClassForLua xx{999};
+  scriptManager.getFunction("luaUseTestClass")(&xx);
+
+  scriptManager.addClassConstructor<MyData1, void(*)(int, int)>("MyData1");
+  scriptManager.addClassVariable("MyData1", "x", &MyData1::x);
+  scriptManager.addClassVariable("MyData1", "y", &MyData1::y);
+  MyData1 someMyData1{3, 5};
+  scriptManager.runLua("function useMyData1(x)\nFW.debug('Received MyData1! ' .. x.x .. ', ' .. x.y)\nend");
+  scriptManager.getFunction("useMyData1")(&someMyData1);
+  scriptManager.addFunction("useMyData1FromCPP", useMyData1FromLua);
+  scriptManager.runLua("local x = FW.MyData1(7, 99)\nFW.useMyData1FromCPP(x)\nFW.debug('cpp messed things up: ' .. x.x .. ', ' .. x.y)\n");
 
   initialized = true;
 }
