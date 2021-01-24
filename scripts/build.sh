@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-./scripts/process_shaders.sh
 docker build -t fire-web-engine .
 docker run \
   --rm \

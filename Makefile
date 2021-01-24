@@ -1,8 +1,11 @@
 SRC_DIR = ./src
 DIST_DIR = ./dist
+GLSL_DIR = $(SRC_DIR)/Graphics/Shaders
 SRC_FILES = $(shell find $(SRC_DIR)/ -type f -name '*.cpp')
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.cpp,$(DIST_DIR)/%.o,$(SRC_FILES))
 DEP_FILES = $(patsubst %.o,%.d,$(OBJ_FILES))
+GLSL_FILES = $(shell find $(GLSL_DIR)/ -type f -name '*.glsl')
+COMPILED_GLSL_FILES = $(patsubst %.glsl,%.h,$(GLSL_FILES))
 
 EXE = $(DIST_DIR)/index.js
 
@@ -33,8 +36,8 @@ EMCCFLAGS = \
 
 default: $(EXE)
 
-$(EXE): $(OBJ_FILES)
-	$(CXX) $(CXXFLAGS) -o $@ $(EMCCFLAGS) $^
+$(EXE): $(COMPILED_GLSL_FILES) $(OBJ_FILES)
+	$(CXX) $(CXXFLAGS) -o $@ $(EMCCFLAGS) $(OBJ_FILES)
 
 -include $(DEP_FILES)
 
@@ -42,5 +45,8 @@ $(DIST_DIR)/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p "$(dir $@)"
 	$(CXX) $(CXXFLAGS) -MMD -c -o $@ $<
 
+$(GLSL_DIR)/%.h: $(GLSL_DIR)/%.glsl
+	xxd -i $< > $@
+
 clean:
-	rm -rf $(DIST_DIR)/
+	rm -rf $(DIST_DIR)/ $(COMPILED_GLSL_FILES)
