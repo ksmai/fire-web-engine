@@ -151,43 +151,7 @@ namespace FW {
 
     Function getFunction(const std::string&);
 
-    template <typename ReturnType, typename... Params>
-    void addFunction(const char* name, ReturnType(*fp)(Params...)) {
-      luabridge::getGlobalNamespace(L)
-        .beginNamespace(luaNamespace)
-        .addFunction(name, fp)
-        .endNamespace();
-    }
-
-    template <typename T, typename Ctor>
-    void addClassConstructor(const char* className) {
-      luabridge::getGlobalNamespace(L)
-        .beginNamespace(luaNamespace)
-        .beginClass<T>(className)
-        .template addConstructor<Ctor>()
-        .endClass()
-        .endNamespace();
-    }
-
-    template <typename T, typename ReturnType, typename... Params>
-    void addClassMethod(const char* className, const char* methodName, ReturnType(T::*fp)(Params...)) {
-      luabridge::getGlobalNamespace(L)
-        .beginNamespace(luaNamespace)
-        .beginClass<T>(className)
-        .addFunction(methodName, fp)
-        .endClass()
-        .endNamespace();
-    }
-
-    template <typename T, typename MemberType>
-    void addClassVariable(const char* className, const char* variableName, MemberType T::* variable) {
-      luabridge::getGlobalNamespace(L)
-        .beginNamespace(luaNamespace)
-        .beginClass<T>(className)
-        .addProperty(variableName, variable)
-        .endClass()
-        .endNamespace();
-    }
+    luabridge::Namespace beginNamespace() const;
 
   private:
     static const char* luaNamespace;

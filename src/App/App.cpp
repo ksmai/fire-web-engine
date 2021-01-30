@@ -161,23 +161,33 @@ void FW::App::init() {
 
   scriptManager.getFunction("aLuaFunc")("an arg from c++");
 
-  scriptManager.addClassConstructor<TestClassForLua, void(*)(int)>("TestClass");
-  scriptManager.addClassMethod("TestClass", "someMethod", &TestClassForLua::someMethod);
+  scriptManager
+    .beginNamespace()
+      .beginClass<TestClassForLua>("TestClass")
+        .addConstructor<void(*)(int)>()
+        .addFunction("someMethod", &TestClassForLua::someMethod)
+      .endClass()
+      .addFunction("useTestClass", &useTestClassForLua)
+    .endNamespace();
 
-  scriptManager.addFunction("useTestClass", &useTestClassForLua);
   scriptManager.runLua("local x = FW.TestClass(42)\nFW.debug(x:someMethod('SomeString', 1000))\nFW.useTestClass(x)\n");
 
   scriptManager.runLua("function luaUseTestClass(x)\nFW.debug(x:someMethod('In luaUseTestClass', 666))\nreturn 33333\nend");
   TestClassForLua xx{999};
   scriptManager.getFunction("luaUseTestClass")(&xx);
 
-  scriptManager.addClassConstructor<MyData1, void(*)(int, int)>("MyData1");
-  scriptManager.addClassVariable("MyData1", "x", &MyData1::x);
-  scriptManager.addClassVariable("MyData1", "y", &MyData1::y);
+  scriptManager
+    .beginNamespace()
+      .beginClass<MyData1>("MyData1")
+        .addConstructor<void(*)(int, int)>()
+        .addProperty("x", &MyData1::x)
+        .addProperty("y", &MyData1::y)
+      .endClass()
+      .addFunction("useMyData1FromCPP", useMyData1FromLua)
+    .endNamespace();
   MyData1 someMyData1{3, 5};
   scriptManager.runLua("function useMyData1(x)\nFW.debug('Received MyData1! ' .. x.x .. ', ' .. x.y)\nend");
   scriptManager.getFunction("useMyData1")(&someMyData1);
-  scriptManager.addFunction("useMyData1FromCPP", useMyData1FromLua);
   scriptManager.runLua("local x = FW.MyData1(7, 99)\nFW.useMyData1FromCPP(x)\nFW.debug('cpp messed things up: ' .. x.x .. ', ' .. x.y)\n");
 
   initialized = true;

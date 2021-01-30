@@ -11,7 +11,9 @@ FW::ScriptManager::ScriptManager():
   L{luaL_newstate()}
 {
   luaL_openlibs(L);
-  addFunction("debug", &luaDebug);
+  beginNamespace()
+    .addFunction("debug", &luaDebug)
+    .endNamespace();
 }
 
 FW::ScriptManager::~ScriptManager() {
@@ -24,4 +26,8 @@ bool FW::ScriptManager::runLua(const std::string& luaSource) {
 
 FW::ScriptManager::Function FW::ScriptManager::getFunction(const std::string& name) {
   return Function{name, luabridge::getGlobal(L, name.c_str())};
+}
+
+luabridge::Namespace FW::ScriptManager::beginNamespace() const {
+  return luabridge::getGlobalNamespace(L).beginNamespace(luaNamespace);
 }
