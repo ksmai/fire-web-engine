@@ -39,3 +39,6 @@ node_modules/
 
 # preprocessed GLSL shaders
 src/Graphics/Shaders/*.h
+
+# preprocessed Lua scripts
+src/Script/Scripts/*.h

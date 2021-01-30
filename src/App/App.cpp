@@ -217,6 +217,12 @@ void FW::App::init() {
   eventBus.emit(MyData1{100, 100});
   scriptManager.runLua("FW.Event.EventBus.emitMyData1(FW.Event.MyData1(77, 77))");
 
+  #include "Script/Scripts/EventBus.h"
+  scriptManager.runLua(std::string(src_Script_Scripts_EventBus_lua, src_Script_Scripts_EventBus_lua + src_Script_Scripts_EventBus_lua_len));
+
+  scriptManager.runLua("print('subscribe', EventBus.subscribeCustom)\nEventBus.subscribeCustom('myLuaEvent', function(data)\nprint('myLuaEvent received', data.xyz)\nend)\nprint('success')\n");
+  scriptManager.runLua("EventBus.emitCustom('myLuaEvent', { xyz = 444222 })");
+
   initialized = true;
 }
 
