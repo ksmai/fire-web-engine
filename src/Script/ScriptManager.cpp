@@ -21,7 +21,11 @@ FW::ScriptManager::~ScriptManager() {
 }
 
 bool FW::ScriptManager::runLua(const std::string& luaSource) {
-  return luaL_dostring(L,  luaSource.c_str());
+  bool error = (luaL_loadstring(L, luaSource.c_str()) || lua_pcall(L, 0, LUA_MULTRET, 0));
+  if (error) {
+    Logger::error("Error in Lua: %s", lua_tostring(L, -1));
+  }
+  return error;
 }
 
 FW::ScriptManager::Function FW::ScriptManager::getFunction(const std::string& name) {
