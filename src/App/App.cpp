@@ -138,23 +138,6 @@ void FW::App::init() {
   actorID.incrementVersion();
   SDL_Log("actorID==actorID2 = %d", actorID==actorID2);
 
-  eventBus.subscribe<MyData2>(std::bind(&MyListenerObject::myListenMethod, &obj, std::placeholders::_1));
-  eventBus.emit<MyData2>({"NotCalled"});
-  eventBus.emit<MyData1>({1, 2});
-  auto id1 = eventBus.subscribe<MyData1>(myListener1);
-  eventBus.emit<MyData2>({"NotCalled2"});
-  eventBus.emit<MyData1>({3, 4});
-  eventBus.subscribe<MyData2>(myListener2);
-  eventBus.emit<MyData2>({"Called!!"});
-  eventBus.emit<MyData1>({5, 6});
-  auto id2 = eventBus.subscribe<MyData1>(myListener3);
-  eventBus.emit<MyData2>({"Called Again!!"});
-  eventBus.unsubscribe<MyData1>(id1);
-  eventBus.unsubscribe<MyData1>(id2);
-  eventBus.unsubscribe<MyData1>(id2);
-  eventBus.unsubscribe<MyData2>(id2);
-  eventBus.emit<MyData1>({7, 8});
-
   // test lua
   bool luaHasError = scriptManager.runLua("function aLuaFunc(s)\nFW.debug('aLuaFucCalled!' .. s)\nend");
   std::cout << "Lua has error? " << luaHasError << "\n";
@@ -189,6 +172,50 @@ void FW::App::init() {
   scriptManager.runLua("function useMyData1(x)\nFW.debug('Received MyData1! ' .. x.x .. ', ' .. x.y)\nend");
   scriptManager.getFunction("useMyData1")(&someMyData1);
   scriptManager.runLua("local x = FW.MyData1(7, 99)\nFW.useMyData1FromCPP(x)\nFW.debug('cpp messed things up: ' .. x.x .. ', ' .. x.y)\n");
+
+
+  scriptManager
+    .beginNamespace()
+      .beginNamespace("Event")
+        .beginClass<MyData1>("MyData1")
+          .addConstructor<void(*)(int, int)>()
+          .addProperty("x", &MyData1::x)
+          .addProperty("y", &MyData1::y)
+        .endClass()
+        .beginNamespace("EventBus")
+          .addFunction("emitMyData1", std::function<void(const MyData1&)>(std::bind(&EventBus::emit<MyData1>, &eventBus, std::placeholders::_1)))
+          .addFunction("subscribeMyData1", std::function<EventBus::EventListenerID(luabridge::LuaRef)>(std::bind(&EventBus::luaSubscribe<MyData1>, &eventBus, std::placeholders::_1)))
+          .addFunction("unsubscribeMyData1", std::function<void(EventBus::EventListenerID)>(std::bind(&EventBus::unsubscribe<MyData1>, &eventBus, std::placeholders::_1)))
+        .endNamespace()
+      .endNamespace()
+    .endNamespace();
+
+  eventBus.subscribe<MyData2>(std::bind(&MyListenerObject::myListenMethod, &obj, std::placeholders::_1));
+  eventBus.emit<MyData2>({"NotCalled"});
+  eventBus.emit<MyData1>({1, 2});
+  eventBus.subscribe<MyData1>(myListener1);
+  eventBus.emit<MyData2>({"NotCalled2"});
+  eventBus.emit<MyData1>({3, 4});
+  eventBus.subscribe<MyData2>(myListener2);
+  eventBus.emit<MyData2>({"Called!!"});
+  eventBus.emit<MyData1>({5, 6});
+  auto id2 = eventBus.subscribe<MyData1>(myListener3);
+  eventBus.emit<MyData2>({"Called Again!!"});
+  eventBus.unsubscribe<MyData1>(id2);
+  eventBus.unsubscribe<MyData1>(id2);
+  eventBus.unsubscribe<MyData2>(id2);
+  eventBus.emit<MyData1>({7, 8});
+
+  std::cout << "type in c++ = " << Event<MyData1>::type() << "\n";
+  scriptManager.runLua("function dataReceiver(data)\nprint('data received in lua: (' .. data.x .. ', ' .. data.y .. ')')\nend");
+  scriptManager.runLua("dataReceiver(FW.Event.MyData1(999, 999))");
+  scriptManager.runLua("listenerID = FW.Event.EventBus.subscribeMyData1(dataReceiver)");
+  scriptManager.runLua("FW.Event.EventBus.emitMyData1(FW.Event.MyData1(7000, 8000))");
+  eventBus.emit(MyData1{4634, 35645});
+
+  scriptManager.runLua("print('unsubscribing: ')\nprint(listenerID)\nFW.Event.EventBus.unsubscribeMyData1(listenerID)\nprint('success')");
+  eventBus.emit(MyData1{100, 100});
+  scriptManager.runLua("FW.Event.EventBus.emitMyData1(FW.Event.MyData1(77, 77))");
 
   initialized = true;
 }

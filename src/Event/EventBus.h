@@ -5,6 +5,10 @@
 #include <iterator>
 #include <vector>
 #include <functional>
+#include "lua-5.4.2/src/lua.hpp"
+#include "LuaBridge/LuaBridge.h"
+#include "App/abort.h"
+#include "App/Logger.h"
 #include "Event/Event.h"
 
 namespace FW {
@@ -20,6 +24,20 @@ namespace FW {
       EventType type = Event<Payload>::type();
       ensureSize(type);
       listeners[type].push_back(EventListenerAdapter{listener});
+      EventListenerID id{getNextEventListenerID()};
+      listenerIDs[type].push_back(id);
+      return id;
+    }
+
+    template <typename Payload>
+    EventListenerID luaSubscribe(luabridge::LuaRef listener) {
+      if (!listener.isFunction()) {
+        Logger::error("Subscribing with a non-function LuaRef");
+        abort();
+      }
+      EventType type = Event<Payload>::type();
+      ensureSize(type);
+      listeners[type].push_back(LuaEventListenerAdapter<Payload>{listener});
       EventListenerID id{getNextEventListenerID()};
       listenerIDs[type].push_back(id);
       return id;
@@ -73,6 +91,20 @@ namespace FW {
       }
 
       EventListener<Payload> listener;
+    };
+
+    template <typename Payload>
+    struct LuaEventListenerAdapter {
+      LuaEventListenerAdapter(luabridge::LuaRef listener):
+        listener{listener}
+      {
+      }
+
+      void operator()(const BaseEvent& event) {
+        listener(static_cast<const Event<Payload>&>(event).payload);
+      }
+
+      luabridge::LuaRef listener;
     };
 
     std::vector<std::vector<EventListener<BaseEvent>>> listeners;
