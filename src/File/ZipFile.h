@@ -23,6 +23,7 @@ namespace FW {
 
     Data getFileContent(Index i) const;
     Data getFileContent(const FileName& fileName) const;
+    bool hasFile(const FileName& fileName) const;
 
   private:
     Size findEndOfCentralDirectorySignature() const;

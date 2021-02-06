@@ -174,6 +174,11 @@ FW::Data FW::ZipFile::getFileContent(const FileName& fileName) const {
   return getFileContent(it->second);
 }
 
+bool FW::ZipFile::hasFile(const FileName& fileName) const {
+  auto it{fileIndexes.find(fileName)};
+  return it != fileIndexes.end();
+}
+
 uint32_t FW::parseUint32LE(const Data& data, ZipFile::Size offset) {
   uint32_t result = 0u;
   result += data[offset+0];
