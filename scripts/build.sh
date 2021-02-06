@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -eo pipefail
 
 docker build -t fire-web-engine .
 docker run \
