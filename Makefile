@@ -39,7 +39,7 @@ EMCCFLAGS = \
 
 LD_FLAGS = -L./lib/ -llua
 
-.PHONY = default clean
+.PHONY: default clean
 
 default: $(EXE)
 
