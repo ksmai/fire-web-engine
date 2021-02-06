@@ -34,7 +34,8 @@ EMCCFLAGS = \
 	-s SDL2_IMAGE_FORMATS='["png"]' \
 	-s USE_ZLIB=1 \
 	-s MODULARIZE=1 \
-	-s 'EXPORT_NAME="createFireWebEngine"'
+	-s 'EXPORT_NAME="FireWebEngine"' \
+	-s EXPORTED_RUNTIME_METHODS=['ccall']
 
 LD_FLAGS = -L./lib/ -llua
 

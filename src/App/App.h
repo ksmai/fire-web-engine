@@ -1,9 +1,10 @@
 #ifndef __APP_H__
 #define __APP_H__
 
-#include <string>
+#include "App/AppConfig.h"
 #include "App/Clock.h"
 #include "Audio/Audio.h"
+#include "File/RemoteFile.h"
 #include "Graphics/Graphics.h"
 #include "Input/KeyboardInput.h"
 #include "Input/MouseInput.h"
@@ -12,14 +13,7 @@
 namespace FW {
   class App {
   public:
-    struct Config {
-      std::string sharedResourceFile;
-      std::string title;
-      std::size_t canvasWidth;
-      std::size_t canvasHeight;
-    };
-
-    explicit App(const Config& config);
+    explicit App(const AppConfig& config);
     App(const App&) =delete;
     App& operator=(const App&) =delete;
     ~App();
@@ -35,6 +29,11 @@ namespace FW {
     KeyboardInput keyboardInput;
     MouseInput mouseInput;
     Clock clock;
+
+    RemoteFile configFile;
+
+    bool isInitializing;
+    bool isLoadingLevel;
   };
 }
 
