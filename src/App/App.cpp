@@ -27,7 +27,8 @@ void FW::App::update() {
     init();
     return;
   }
-  game.update();
+  clock.update();
+  game.update(clock.dt(), clock.time());
 }
 
 void FW::App::init() {
@@ -42,7 +43,6 @@ void FW::App::init() {
       &audio,
       &keyboardInput,
       &mouseInput,
-      &clock,
       &eventBus,
       &processRunner,
       ZipFile{resourceFile.getData()}

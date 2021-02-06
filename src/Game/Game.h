@@ -2,15 +2,14 @@
 #define __GAME_H__
 
 #include <memory>
-#include "App/Clock.h"
 #include "Audio/Audio.h"
 #include "Event/EventBus.h"
 #include "File/ZipFile.h"
-#include "Game/SpriteSheetRepository.h"
 #include "Graphics/Graphics.h"
 #include "Input/KeyboardInput.h"
 #include "Input/MouseInput.h"
 #include "Process/ProcessRunner.h"
+#include "Render/Renderer.h"
 #include "Script/ScriptManager.h"
 
 namespace FW {
@@ -27,25 +26,21 @@ namespace FW {
       Audio* audio,
       KeyboardInput* keyboardInput,
       MouseInput* mouseInput,
-      Clock* clock,
       EventBus* eventBus,
       ProcessRunner* processRunner,
       ZipFile&& resources
     );
 
-    void update();
+    void update(double dt, double time);
 
   private:
     ScriptManager* scriptManager;
-    Graphics* graphics;
     Audio* audio;
     KeyboardInput* keyboardInput;
     MouseInput* mouseInput;
-    Clock* clock;
-    EventBus* eventBus;
     ProcessRunner* processRunner;
 
-    std::unique_ptr<SpriteSheetRepository> spriteSheetRepository;
+    std::unique_ptr<Renderer> renderer;
   };
 }
 #endif

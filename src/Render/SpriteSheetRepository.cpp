@@ -1,5 +1,5 @@
 #include "File/XMLFile.h"
-#include "Game/SpriteSheetRepository.h"
+#include "Render/SpriteSheetRepository.h"
 
 FW::SpriteSheetRepository::SpriteSheetRepository(Graphics* graphics):
   graphics{graphics}

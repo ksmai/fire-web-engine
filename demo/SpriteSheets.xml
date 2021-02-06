@@ -1,3 +1,5 @@
 <SpriteSheets>
   <SpriteSheet id="0" width="16" height="16" margin="1" path="roguelikeSheet_transparent.png" />
+  <SpriteSheet id="1" width="16" height="16" path="face.png" />
+  <SpriteSheet id="2" width="16" height="16" path="heart.png" />
 </SpriteSheets>
