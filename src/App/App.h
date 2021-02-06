@@ -4,10 +4,13 @@
 #include "App/AppConfig.h"
 #include "App/Clock.h"
 #include "Audio/Audio.h"
+#include "Event/EventBus.h"
+#include "File/RemoteFile.h"
+#include "Game/Game.h"
 #include "Graphics/Graphics.h"
 #include "Input/KeyboardInput.h"
 #include "Input/MouseInput.h"
-#include "Level/LevelManager.h"
+#include "Process/ProcessRunner.h"
 #include "Script/ScriptManager.h"
 
 namespace FW {
@@ -21,6 +24,8 @@ namespace FW {
     void update();
 
   private:
+    void init();
+
     static bool created;
 
     ScriptManager scriptManager;
@@ -29,7 +34,13 @@ namespace FW {
     KeyboardInput keyboardInput;
     MouseInput mouseInput;
     Clock clock;
-    LevelManager levelManager;
+    EventBus eventBus;
+    ProcessRunner processRunner;
+
+    Game game;
+
+    RemoteFile resourceFile;
+    bool initialized;
   };
 }
 

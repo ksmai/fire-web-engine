@@ -11,12 +11,12 @@ void loop(void* arg) {
 
 extern "C" {
   EMSCRIPTEN_KEEPALIVE
-  void start(const char* levelConfig, const char* title, std::size_t canvasWidth, std::size_t canvasHeight) {
+  void start(const char* resources, const char* title, std::size_t canvasWidth, std::size_t canvasHeight) {
     FW::AppConfig config;
     config.title = title;
     config.canvasWidth = canvasWidth;
     config.canvasHeight = canvasHeight;
-    config.levelConfig = levelConfig;
+    config.resources = resources;
     app = new FW::App{config};
     emscripten_set_main_loop_arg(loop, app, 0, false);
     // TODO clean up after game is done?

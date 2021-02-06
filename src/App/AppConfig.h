@@ -5,7 +5,7 @@
 
 namespace FW {
   struct AppConfig {
-    std::string levelConfig;
+    std::string resources;
     std::string title;
     std::size_t canvasWidth;
     std::size_t canvasHeight;

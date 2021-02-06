@@ -1,18 +1,21 @@
 #include "App/abort.h"
 #include "App/App.h"
 #include "App/Logger.h"
+#include "File/ZipFile.h"
 
 bool FW::App::created{false};
 
 FW::App::App(const AppConfig& config):
   graphics{config.title, config.canvasWidth, config.canvasHeight},
-  levelManager{config.levelConfig}
+  resourceFile{config.resources},
+  initialized{false}
 {
   if (created) {
     Logger::error("Cannot create more than 1 App");
     abort();
   }
   created = true;
+  resourceFile.open();
 }
 
 FW::App::~App() {
@@ -20,8 +23,31 @@ FW::App::~App() {
 }
 
 void FW::App::update() {
-  clock.update();
-  keyboardInput.update();
-  mouseInput.update();
-  levelManager.update(clock.dt());
+  if (!initialized) {
+    init();
+    return;
+  }
+  game.update();
+}
+
+void FW::App::init() {
+  if (resourceFile.isError()) {
+    Logger::error("Failed to load resource file: %s", resourceFile.getError().c_str());
+    abort();
+  }
+  if (resourceFile.isOpened()) {
+    game.init(
+      &scriptManager,
+      &graphics,
+      &audio,
+      &keyboardInput,
+      &mouseInput,
+      &clock,
+      &eventBus,
+      &processRunner,
+      ZipFile{resourceFile.getData()}
+    );
+    resourceFile.close();
+    initialized = true;
+  }
 }
