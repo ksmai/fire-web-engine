@@ -7,7 +7,7 @@
 #include "Graphics/Graphics.h"
 #include "Input/KeyboardInput.h"
 #include "Input/MouseInput.h"
-#include "Level/LevelConfigParser.h"
+#include "Level/LevelManager.h"
 #include "Script/ScriptManager.h"
 
 namespace FW {
@@ -29,11 +29,7 @@ namespace FW {
     KeyboardInput keyboardInput;
     MouseInput mouseInput;
     Clock clock;
-
-    LevelConfigParser levelConfigParser;
-
-    bool isInitializing;
-    bool isLoadingLevel;
+    LevelManager levelManager;
   };
 }
 
