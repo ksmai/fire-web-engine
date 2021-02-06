@@ -4,10 +4,10 @@
 #include "App/AppConfig.h"
 #include "App/Clock.h"
 #include "Audio/Audio.h"
-#include "File/RemoteFile.h"
 #include "Graphics/Graphics.h"
 #include "Input/KeyboardInput.h"
 #include "Input/MouseInput.h"
+#include "Level/LevelConfigParser.h"
 #include "Script/ScriptManager.h"
 
 namespace FW {
@@ -30,7 +30,7 @@ namespace FW {
     MouseInput mouseInput;
     Clock clock;
 
-    RemoteFile configFile;
+    LevelConfigParser levelConfigParser;
 
     bool isInitializing;
     bool isLoadingLevel;

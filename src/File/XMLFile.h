@@ -8,7 +8,7 @@
 
 namespace FW {
   class XMLFile {
-  private:
+  public:
     class XMLNode {
     public:
       XMLNode(rapidxml::xml_node<>*);
@@ -21,7 +21,6 @@ namespace FW {
       rapidxml::xml_node<>* node;
     };
 
-  public:
     XMLFile(Data&&);
     XMLFile(const XMLFile&) =delete;
     XMLFile& operator=(const XMLFile&) =delete;

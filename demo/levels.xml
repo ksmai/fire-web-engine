@@ -1,0 +1,4 @@
+<Game>
+  <Level id="0" next="1" config="level0.xml" />
+  <Level id="1" config="level1.xml" />
+</Game>

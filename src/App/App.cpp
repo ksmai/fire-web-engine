@@ -6,7 +6,7 @@ bool FW::App::created{false};
 
 FW::App::App(const AppConfig& config):
   graphics{config.title, config.canvasWidth, config.canvasHeight},
-  configFile{config.configFilePath},
+  levelConfigParser{config.levelConfig},
   isInitializing{true},
   isLoadingLevel{false}
 {
@@ -15,7 +15,6 @@ FW::App::App(const AppConfig& config):
     abort();
   }
   created = true;
-  configFile.open();
 }
 
 FW::App::~App() {
@@ -24,13 +23,19 @@ FW::App::~App() {
 
 void FW::App::update() {
   if (isInitializing) {
-    if (configFile.isOpened()) {
-      Logger::info("Loaded");
+    if (levelConfigParser.isReady()) {
+      Logger::info("ready to parse levels");
+      std::vector<LevelConfig> levels{levelConfigParser.parse()};
+      std::size_t id{0};
+      for (auto& level : levels) {
+        std::cout << "DEBUG: found level " << (id++) << " , ";
+        if (level.hasNext) {
+          std::cout << "next = " << level.nextID << " , ";
+        }
+        std::cout << level.url << "\n";
+      }
+      levelConfigParser.close();
       isInitializing = false;
-    } else if (configFile.isError()) {
-      Logger::error("Config file cannot be opened: %s", configFile.getError().c_str());
-      //abort();
-      return;
     } else {
       return;
     }
