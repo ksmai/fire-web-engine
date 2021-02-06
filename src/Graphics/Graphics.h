@@ -26,6 +26,7 @@ namespace FW {
     void prepareDrawSprite() const;
     void drawSprite(const Sprite&) const;
     void finishDrawSprite() const;
+    void finishDraw() const;
 
   private:
     static bool created;

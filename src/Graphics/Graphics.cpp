@@ -83,3 +83,6 @@ void FW::Graphics::drawSprite(const Sprite& sprite) const {
 void FW::Graphics::finishDrawSprite() const {
   spriteShader->finishDraw();
 }
+
+void FW::Graphics::finishDraw() const {
+}
