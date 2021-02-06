@@ -15,16 +15,10 @@ FW::App::App(const AppConfig& config):
     abort();
   }
   created = true;
-  if (SDL_Init(0)) {
-    Logger::error("SDL_Init() failed: %s", SDL_GetError());
-    abort();
-  }
-
   configFile.open();
 }
 
 FW::App::~App() {
-  SDL_Quit();
   created = false;
 }
 
@@ -35,7 +29,8 @@ void FW::App::update() {
       isInitializing = false;
     } else if (configFile.isError()) {
       Logger::error("Config file cannot be opened: %s", configFile.getError().c_str());
-      abort();
+      //abort();
+      return;
     } else {
       return;
     }

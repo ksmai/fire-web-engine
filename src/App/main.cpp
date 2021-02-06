@@ -2,6 +2,8 @@
 #include "App/App.h"
 #include "App/AppConfig.h"
 
+FW::App* app;
+
 void loop(void* arg) {
   FW::App* app = static_cast<FW::App*>(arg);
   app->update();
@@ -15,8 +17,17 @@ extern "C" {
     config.canvasWidth = canvasWidth;
     config.canvasHeight = canvasHeight;
     config.configFilePath = configFilePath;
-    FW::App* app = new FW::App{config};
+    app = new FW::App{config};
     emscripten_set_main_loop_arg(loop, app, 0, false);
     // TODO clean up after game is done?
+  }
+
+  EMSCRIPTEN_KEEPALIVE
+  void stop() {
+    if (app) {
+      emscripten_cancel_main_loop();
+      delete app;
+      app = nullptr;
+    }
   }
 }

@@ -51,6 +51,8 @@ FW::Graphics::Graphics(const std::string& title, std::size_t canvasWidth, std::s
 }
 
 FW::Graphics::~Graphics() {
+  spriteShader.reset();
+
   SDL_GL_DeleteContext(context);
   SDL_DestroyWindow(window);
   SDL_QuitSubSystem(SDL_INIT_VIDEO);
