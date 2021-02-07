@@ -1,0 +1,91 @@
+<Map>
+  <GridDimension width="5" height="5" />
+  <CellDimension width="16" height="16" />
+  <SpriteSheet id="0" />
+
+  <Row>
+    <Column>
+      <Tile x="2" y="28" />
+    </Column>
+    <Column>
+      <Tile x="3" y="28" />
+    </Column>
+    <Column>
+      <Tile x="4" y="28" />
+    </Column>
+    <Column>
+      <Tile x="5" y="29" />
+    </Column>
+    <Column>
+      <Tile x="5" y="30" />
+    </Column>
+  </Row>
+  <Row>
+    <Column>
+      <Tile x="2" y="29" />
+    </Column>
+    <Column>
+      <Tile x="3" y="29" />
+    </Column>
+    <Column>
+      <Tile x="4" y="29" />
+    </Column>
+    <Column>
+      <Tile x="5" y="30" />
+    </Column>
+    <Column>
+      <Tile x="5" y="29" />
+    </Column>
+  </Row>
+  <Row>
+    <Column>
+      <Tile x="2" y="30" />
+    </Column>
+    <Column>
+      <Tile x="3" y="30" />
+    </Column>
+    <Column>
+      <Tile x="4" y="30" />
+    </Column>
+    <Column>
+      <Tile x="5" y="29" />
+    </Column>
+    <Column>
+      <Tile x="5" y="30" />
+    </Column>
+  </Row>
+  <Row>
+    <Column>
+      <Tile x="5" y="30" />
+    </Column>
+    <Column>
+      <Tile x="5" y="29" />
+    </Column>
+    <Column>
+      <Tile x="5" y="30" />
+    </Column>
+    <Column>
+      <Tile x="5" y="29" />
+    </Column>
+    <Column>
+      <Tile x="5" y="30" />
+    </Column>
+  </Row>
+  <Row>
+    <Column>
+      <Tile x="5" y="29" />
+    </Column>
+    <Column>
+      <Tile x="5" y="30" />
+    </Column>
+    <Column>
+      <Tile x="5" y="29" />
+    </Column>
+    <Column>
+      <Tile x="5" y="30" />
+    </Column>
+    <Column>
+      <Tile x="5" y="29" />
+    </Column>
+  </Row>
+</Map>
