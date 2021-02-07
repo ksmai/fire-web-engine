@@ -22,9 +22,7 @@ void FW::Game::init(
   renderer.reset(new Renderer{eventBus, graphics});
   renderer->init(resources);
 
-
-  renderer->setTileSheet(2);
-  eventBus->emit(AddTilePosition{SpritePosition{0, 0}});
+  renderer->setTileSheet(0);
 }
 
 void FW::Game::update(double dt, double time) {

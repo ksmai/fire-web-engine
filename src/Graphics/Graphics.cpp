@@ -48,6 +48,7 @@ FW::Graphics::Graphics(const std::string& title, std::size_t canvasWidth, std::s
   glEnable(GL_BLEND);
 
   spriteShader.reset(new SpriteShader{});
+  tileShader.reset(new TileShader{});
 }
 
 FW::Graphics::~Graphics() {
@@ -85,4 +86,12 @@ void FW::Graphics::finishDrawSprite() const {
 }
 
 void FW::Graphics::finishDraw() const {
+}
+
+void FW::Graphics::prepareDrawTile(float cellW, float cellH, float gridW, float gridH, const SpriteSheet& spriteSheet) const {
+  tileShader->prepareDraw(cellW, cellH, gridW, gridH, spriteSheet);
+}
+
+void FW::Graphics::finishDrawTile() const {
+  tileShader->finishDraw();
 }

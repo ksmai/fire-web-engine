@@ -17,6 +17,11 @@ namespace FW {
 
     Sprite makeSprite(const SpritePosition&) const;
 
+    float getSpriteWidthInTexCoords() const;
+    float getSpriteHeightInTexCoords() const;
+    float getMarginWidthInTexCoords() const;
+    float getMarginHeightInTexCoords() const;
+
   private:
     const SpriteShaderInfo getSpriteShaderInfo(const SpritePosition&) const;
 

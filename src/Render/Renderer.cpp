@@ -1,6 +1,8 @@
 #include <functional>
 #include "Render/Renderer.h"
 
+#include "Graphics/TileVertexArray.h"
+
 FW::Renderer::Renderer(EventBus* eventBus, Graphics* graphics):
   eventBus{eventBus},
   graphics{graphics},
@@ -27,13 +29,26 @@ void FW::Renderer::setTileSheet(SpriteSheetRepository::ID id) {
 void FW::Renderer::update(double, double) {
   // hardcoded tests
   graphics->prepareDraw();
-  graphics->prepareDrawSprite();
+  graphics->prepareDrawTile(0.1f, 0.1f, 3.0f, 4.0f, *tileSpriteSheet);
   tileSpriteSheet->prepareDraw();
-  for (Sprite& sprite : tiles) {
-    graphics->drawSprite(sprite);
-  }
+  std::vector<float> texOffsets{
+    7.0f, 7.0f,
+    8.0f, 7.0f,
+    9.0f, 7.0f,
+    7.0f, 8.0f,
+    8.0f, 8.0f,
+    9.0f, 8.0f,
+    7.0f, 9.0f,
+    8.0f, 9.0f,
+    9.0f, 9.0f,
+    13.0f, 19.0f,
+    14.0f, 19.0f,
+    15.0f, 19.0f
+  };
+  TileVertexArray vao{texOffsets};
+  vao.draw();
   tileSpriteSheet->finishDraw();
-  graphics->finishDrawSprite();
+  graphics->finishDrawTile();
   graphics->finishDraw();
 }
 

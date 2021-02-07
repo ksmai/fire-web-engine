@@ -9,6 +9,7 @@
 #include "Graphics/Sprite.h"
 #include "Graphics/SpriteShader.h"
 #include "Graphics/SpriteSheet.h"
+#include "Graphics/TileShader.h"
 
 namespace FW {
   class Graphics {
@@ -28,10 +29,14 @@ namespace FW {
     void finishDrawSprite() const;
     void finishDraw() const;
 
+    void prepareDrawTile(float cellW, float cellH, float gridW, float gridH, const SpriteSheet& spreadSheet) const;
+    void finishDrawTile() const;
+
   private:
     static bool created;
     Color clearColor;
     std::unique_ptr<SpriteShader> spriteShader;
+    std::unique_ptr<TileShader> tileShader;
     SDL_Window* window;
     SDL_GLContext context;
   };

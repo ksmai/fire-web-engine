@@ -41,3 +41,19 @@ const FW::SpriteShaderInfo FW::SpriteSheet::getSpriteShaderInfo(const SpritePosi
   result.h = totalHeight / textureHeight;
   return result;
 }
+
+float FW::SpriteSheet::getSpriteWidthInTexCoords() const {
+  return static_cast<float>(spriteWidth) / texture.getWidth();
+}
+
+float FW::SpriteSheet::getSpriteHeightInTexCoords() const {
+  return static_cast<float>(spriteHeight) / texture.getHeight();
+}
+
+float FW::SpriteSheet::getMarginWidthInTexCoords() const {
+  return static_cast<float>(margin) / texture.getWidth();
+}
+
+float FW::SpriteSheet::getMarginHeightInTexCoords() const {
+  return static_cast<float>(margin) / texture.getHeight();
+}
